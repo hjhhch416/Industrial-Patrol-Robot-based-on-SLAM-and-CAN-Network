@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robot Patrol Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Top Section: Camera Feed -->
+        <section class="camera-section">
+            <div class="viewfinder-corners">
+                <div class="corner top-left"></div>
+                <div class="corner top-right"></div>
+                <div class="corner bottom-left"></div>
+                <div class="corner bottom-right"></div>
+            </div>
+
+            <canvas id="video-canvas"
+                style="width: 100%; height: 100%; object-fit: contain; background: #000;"></canvas>
+            <!-- 
+            <div class="camera-placeholder">
+                <i class="fas fa-video-slash"></i>
+                <p>카메라 접근 권한이 필요합니다</p>
+                <button class="reconnect-btn">다시 연결</button>
+            </div>
+            -->
+        </section>
+
+        <!-- Bottom Section: Status and Controls -->
+        <section class="bottom-section">
+            <!-- Left Panel: Status -->
+            <div class="status-panel">
+                <div class="panel-header">
+                    <span class="status-dot robot-dot"></span>
+                    <h2>로봇 연결 상태</h2>
+                </div>
+
+                <div class="status-grid">
+                    <div class="status-card full-width highlight-mode">
+                        <div class="card-title"><i class="fas fa-cog"></i> 주행 모드</div>
+                        <div class="card-value mode-value"><i class="fas fa-gamepad"></i> 수동 조종</div>
+                    </div>
+
+                    <div class="status-card">
+                        <div class="card-title"><i class="fas fa-exclamation-triangle"></i> 경고</div>
+                        <div class="card-value" id="warning-status">정상</div>
+                    </div>
+                    <div class="status-card">
+                        <div class="card-title"><i class="far fa-lightbulb"></i> 조명</div>
+                        <div class="card-value" id="light-status">OFF</div>
+                    </div>
+
+                    <div class="status-card">
+                        <div class="card-title"><i class="fas fa-tachometer-alt"></i> 좌측 모터</div>
+                        <div class="card-value" id="motor-l-status">0</div>
+                    </div>
+                    <div class="status-card">
+                        <div class="card-title"><i class="fas fa-tachometer-alt"></i> 우측 모터</div>
+                        <div class="card-value" id="motor-r-status">0</div>
+                    </div>
+
+                    <div class="status-card">
+                        <div class="card-title"><i class="fas fa-camera"></i> 카메라 각도</div>
+                        <div class="card-value" id="camera-angle-status">0&deg;</div>
+                    </div>
+
+                    <div class="status-card">
+                        <div class="card-title"><i class="fas fa-satellite-dish"></i> 초음파 거리</div>
+                        <div class="card-value" id="ultrasonic-status">0 cm</div>
+                    </div>
+
+                    <div class="status-card">
+                        <div class="card-title"><i class="fas fa-sun"></i> 조도</div>
+                        <div class="card-value highlight-yellow" id="lux-status">0 lx</div>
+                    </div>
+                    <div class="status-card">
+                        <div class="card-title"><span class="status-dot server-dot" style="margin-right: 2px;"></span>
+                            서버 통신 상태</div>
+                        <div class="card-value">
+                            <span id="connection-status">Offline</span>
+                            <span style="color: var(--text-secondary); margin: 0 5px;">/</span>
+                            <span id="latency-status" class="highlight-cyan">0 ms</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Controls & Nav -->
+            <div class="control-panel">
+                <nav class="tabs">
+                    <button class="tab-btn active" data-tab="control-tab"><i class="fas fa-gamepad"></i> 제어</button>
+                    <button class="tab-btn" data-tab="map-tab"><i class="far fa-map"></i> 맵</button>
+                </nav>
+
+                <div class="tab-content">
+                    <!-- Control Tab -->
+                    <div id="control-tab" class="tab-pane active">
+                        <div class="control-top-bar"
+                            style="display: flex; justify-content: center; align-items: center; gap: 30px; width: 100%;">
+                            <!-- Top Left: Auto Mode -->
+                            <div class="setting-item"
+                                style="background: var(--bg-card); padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; white-space: nowrap;">
+                                <div class="setting-info" style="margin-right: 15px;">
+                                    <h4 style="margin: 0;">자율 주행 모드</h4>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="auto-mode-toggle">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+
+                            <!-- Top Center: Light -->
+                            <div class="setting-item"
+                                style="background: var(--bg-card); padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; white-space: nowrap;">
+                                <div class="setting-info" style="margin-right: 15px;">
+                                    <h4 style="margin: 0;">조명</h4>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="light-toggle">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+
+                            <!-- Top Right: Siren -->
+                            <div class="setting-item"
+                                style="background: var(--bg-card); padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; white-space: nowrap;">
+                                <div class="setting-info" style="margin-right: 15px;">
+                                    <h4 style="margin: 0;">경고</h4>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="siren-toggle">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Center: Movement & Camera -->
+                        <div class="movement-camera-container"
+                            style="display: flex; justify-content: center; align-items: center; gap: 80px;">
+                            <div class="control-group" style="margin-bottom: 0; text-align: center;">
+                                <h3 style="margin-bottom: 15px;">이동 제어</h3>
+                                <div class="d-pad">
+                                    <button class="d-btn up"><i class="fas fa-chevron-up"></i></button>
+                                    <button class="d-btn left"><i class="fas fa-chevron-left"></i></button>
+                                    <button class="d-btn center stop"><i class="fas fa-square"></i></button>
+                                    <button class="d-btn right"><i class="fas fa-chevron-right"></i></button>
+                                    <button class="d-btn down"><i class="fas fa-chevron-down"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="control-group" style="margin-bottom: 0; text-align: center;">
+                                <h3 style="margin-bottom: 15px;">카메라 각도</h3>
+                                <div class="camera-controls">
+                                    <button class="cam-btn cam-left"><i class="fas fa-undo"></i><br>좌회전</button>
+                                    <button class="cam-btn cam-right"><i class="fas fa-redo"></i><br>우회전</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Map Tab -->
+                    <div id="map-tab" class="tab-pane">
+                        <div class="map-container">
+                            <div class="map-placeholder" id="map-placeholder">
+                                <i class="fas fa-map-marked-alt"></i>
+                                <p>SLAM 지도 대기 중...</p>
+                                <div class="robot-marker pos-center"></div>
+                            </div>
+                            <canvas id="map-canvas"
+                                style="display: none; width: 100%; height: 100%; object-fit: contain; background: #000;"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Mode Settings Tab (Removed) -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="https://jsmpeg.com/jsmpeg.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
