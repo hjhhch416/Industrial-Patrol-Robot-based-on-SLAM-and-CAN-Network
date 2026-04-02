@@ -1,5 +1,5 @@
-# site_inspection_robot
-현장을 돌아다니며 감독 감시하는 로봇
+# Industrial Patrol Robot based on SLAM and CAN Network
+SLAM 및 CAN 네트워크 기반 산업용 순찰 로봇
 
 ## 🚛 Logistics-Automation-Mini-Project
 
@@ -13,7 +13,7 @@
 - **프로젝트 명:** 
 - **수행 기간:** 2026.02.25 ~ 2026.03.10
 - **주요 기능**
-  - **1:** explain
+  - **1:** explainSN65HVD230
   - **2:** explain
   - **3:** explain
   - 
@@ -27,7 +27,7 @@
 | **Communication** | Notion, Discord, 카카오톡 |
 | **Frameworks** |  |
 | **Database** |  |
-| **Hardware/OS** | Raspberry Pi 5, STM32F446RE, STM32F429ZI  |
+| **Hardware/OS** | Raspberry Pi 5, STM32F446RE, STM32F429ZI, CAN 트랜시버(SN65HVD230)  |
 
 ---
 
