@@ -10,7 +10,7 @@ SLAM 및 CAN 네트워크 기반 산업용 순찰 로봇
 ---
 
 ## 📅 프로젝트 개요
-- **프로젝트 명:** 
+- **프로젝트 명:** SLAM 및 CAN 네트워크 기반 산업용 순찰 로봇
 - **수행 기간:** 2026.02.25 ~ 2026.03.10
 - **주요 기능**
   - **1:** explainSN65HVD230
@@ -27,7 +27,7 @@ SLAM 및 CAN 네트워크 기반 산업용 순찰 로봇
 | **Communication** | Notion, Discord, 카카오톡 |
 | **Frameworks** |  |
 | **Database** |  |
-| **Hardware/OS** | Raspberry Pi 5, STM32F446RE, STM32F429ZI, CAN 트랜시버(SN65HVD230)  |
+| **Hardware/OS** | Raspberry Pi 5, STM32F446RE, STM32F429ZI, USB-CAN 트랜시버(SN65HVD230)  |
 
 ---
 
@@ -56,8 +56,8 @@ SLAM 및 CAN 네트워크 기반 산업용 순찰 로봇
 
 | 이름 | 역할 | 담당 파트 |
 |----------|----------|----------|
-| 이상현 | Project Leader | 테스트 커밋 |
-| 김현주 | Project Manager | 테스트 커밋 |
-| 김준기 | | 테스트 커밋 |
-| 허준형 | | 테스트 커밋 |
-| 정구빈 | | 테스트 커밋 |
+| 이상현 | Project Leader | SLAM 자율주행 및 서버 |
+| 김현주 | Project Manager |  |
+| 김준기 | | Network(Can) |
+| 허준형 | |  |
+| 정구빈 | | Vision AI |
