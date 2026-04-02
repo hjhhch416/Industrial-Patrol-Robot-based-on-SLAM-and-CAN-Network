@@ -25,7 +25,7 @@ LIDAR 기반 SLAM 및 CAN 네트워크 기반 자율 주행과 YOLOv5 비전 기
 ## 🛠 기술 스택
 | 분류 | 기술 Stack |
 | :--- | :--- |
-| **Languages** | C, Python |
+| **Languages** | C, Python, JavaScript |
 | **Communication** |  |
 | **Frameworks** |  |
 | **Database** |  |
