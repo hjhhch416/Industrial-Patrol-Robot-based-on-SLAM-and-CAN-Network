@@ -51,7 +51,7 @@ https://www.youtube.com/watch?v=PkCoHTn6tds
 자율주행 영상
 
 https://www.youtube.com/shorts/djdbJ7C_Avg
-센서 조절 영상
+센서조작 영상
 
 https://www.youtube.com/shorts/oN8zZtJH-qE
 수동조작 영상
