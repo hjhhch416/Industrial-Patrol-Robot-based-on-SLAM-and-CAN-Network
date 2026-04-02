@@ -11,7 +11,7 @@
 
 ## 📅 프로젝트 개요
 - **프로젝트 명:** 
-- **수행 기간:** 2026.00.00 ~ 2026.00.00
+- **수행 기간:** 2026.02.25 ~ 2026.03.10
 - **주요 기능**
   - **1:** explain
   - **2:** explain
@@ -24,10 +24,10 @@
 | 분류 | 기술 Stack |
 | :--- | :--- |
 | **Languages** | C, Python |
-| **Communication** |  |
+| **Communication** | Notion, Discord, 카카오톡 |
 | **Frameworks** |  |
 | **Database** |  |
-| **Hardware/OS** | Raspberry Pi, STM32 |
+| **Hardware/OS** | Raspberry Pi 5, STM32F446RE, STM32F429ZI  |
 
 ---
 
