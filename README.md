@@ -4,8 +4,8 @@ SLAM 및 CAN 네트워크 기반 산업용 순찰 로봇
 ## 🛰️ Industrial-Safety-Patrol-Mini-Project
 
 ### 🛠 개발 배경
-<img width="400" height="300" alt="그림1" src="https://github.com/user-attachments/assets/0f750556-5562-4eaf-bd01-d30efd3d3e59" />
-<img width="400" height="300" alt="그림2" src="https://github.com/user-attachments/assets/f6424887-e6b1-44cc-ac80-2b343a6696f2" />
+<img width="500" height="400" alt="그림1" src="https://github.com/user-attachments/assets/0f750556-5562-4eaf-bd01-d30efd3d3e59" />
+<img width="500" height="400" alt="그림2" src="https://github.com/user-attachments/assets/f6424887-e6b1-44cc-ac80-2b343a6696f2" />
 
 매년 증가하는 산업재해와 인력 중심 현장 감시의 구조적 한계를 극복하기 위해, LIDAR 기반 SLAM과 YOLOv5 비전 기술을 결합한 자율 순찰 로봇 시스템을 개발했습니다. 본 프로젝트는 작업자의 안전장구 착용 여부를 실시간으로 감지하여 사고를 사전에 예방하고, 상시 감시 체계를 구축함으로써 현장 안전 관리의 효율성을 극대화하는 것을 목표로 합니다.
 
