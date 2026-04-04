@@ -1,5 +1,10 @@
 # Industrial Patrol Robot based on SLAM and CAN Network
 SLAM 및 CAN 네트워크 기반 산업용 순찰 로봇
+<img width="353" height="510" alt="그림3" src="https://github.com/user-attachments/assets/28fa9fc0-1c5c-4ec4-ae9e-e11bdbeb8b4f" />
+<img width="353" height="516" alt="그림4" src="https://github.com/user-attachments/assets/71c28132-f9ac-4132-b884-b8513f7b850f" />
+<img width="387" height="510" alt="그림5" src="https://github.com/user-attachments/assets/9b4e55bc-495b-4e26-a90c-e3986ea74b97" />
+<img width="386" height="445" alt="그림6" src="https://github.com/user-attachments/assets/a431b65f-a0f1-4496-a931-85e59f26f6e1" />
+
 
 ## 🛰️ Industrial-Safety-Patrol-Mini-Project
 
