@@ -92,4 +92,4 @@ https://www.youtube.com/shorts/oN8zZtJH-qE
 | 김현주 | Project Manager/Backend | (추가) |
 | 김준기 | Backend | Network(Can), (추가) |
 | 허준형 | Backend/Frontend | (추가) |
-| 정구빈 | Backend/Edge | Vision AI 및 영상/데이터 송신 파이프라인 구축 |
+| 정구빈 | Backend/Edge | Vision AI & RTSP/UDP 데이터 송신 구현 |
