@@ -50,8 +50,7 @@ LIDAR 기반 SLAM 및 CAN 네트워크 기반 자율 주행과 YOLOv5 비전 기
 | **Languages** | C, Python, JavaScript |
 | **Communication** | CAN, RTSP, UDP, Socket.IO |
 | **Frameworks** | ROS2 (Navi2, Cartographer, rf2o), YOLOv5nu, OpenCV, PyTorch, Node.js, MediaMTX |
-| **Perception & Navigation** | LiDAR(lds-02), Webcam, IMU(MPU6050) |
-| **Hardware/OS** | Raspberry Pi 5, STM32 (F446RE, F429ZI), USB-CAN 트랜시버(SN65HVD230), Ubuntu 24.04, STM32CubeMX |
+| **Hardware/OS** | Raspberry Pi 5, STM32 (F446RE, F429ZI), USB-CAN 트랜시버(SN65HVD230), LiDAR(lds-02), Webcam, IMU(MPU6050), Ubuntu 24.04, STM32CubeMX |
 
 ---
 
