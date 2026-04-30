@@ -88,7 +88,7 @@ https://www.youtube.com/shorts/oN8zZtJH-qE
 | 이름 | 역할 | 담당 파트 |
 |----------|----------|----------|
 | 이상현 | Project Leader/Backend | SLAM 자율주행 및 서버, (추가) |
-| 김현주 | Project Manager/Backend | (추가) |
+| 김현주 | Project Manager/Firmware | (추가) |
 | 김준기 | Backend | Network(Can), (추가) |
-| 허준형 | Backend/Frontend | (추가) |
+| 허준형 | Firmware/Frontend | (추가) |
 | 정구빈 | Backend/Edge | Vision AI 및 영상/데이터 송신 파이프라인 구축 |
