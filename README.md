@@ -98,6 +98,17 @@ LIDAR 기반 SLAM 및 CAN 네트워크 기반 자율 주행과 YOLOv5 비전 기
 ---
 
 ## ⚠️ 보완점 및 향후 과제
+- **Vision AI 및 추론 성능 최적화**  
+  데이터 증강을 통한 'No-Helmet' 인식률을 보강하고, YOLOv11n 업그레이드 및 Jetson Nano 도입으로 엣지 환경의 프레임 저하 문제를 개선할 예정이다.  
+
+- **SLAM 주행 정밀도 및 신뢰성 향상**  
+  IMU 센서와 엔코더를 추가 도입하여 위치 추정(Localization)의 누적 오차를 보정하고, 장기적으로 VSLAM 전환을 통해 실시간 주행 안정성을 확보할 계획이다.  
+
+- **CAN 통신 아키텍처 및 안전 로직 강화**  
+  Heartbeat 신호를 통한 통신 유실 감지 기능을 추가하고, CAN ID 우선순위 재배치를 통해 긴급 정지(AEB) 등 안전 관련 제어의 신뢰성을 극대화할 예정이다.  
+
+- **웹 관제 시스템 저지연 스트리밍 구현**  
+  현재의 RTSP 변환 지연(1.5초)을 해결하기 위해 WebRTC 기반 스트리밍 서버를 구축하고, 관리자 간 상태 공유 및 보안 시스템을 고도화할 방침이다.
 
 ---
 
@@ -108,5 +119,5 @@ LIDAR 기반 SLAM 및 CAN 네트워크 기반 자율 주행과 YOLOv5 비전 기
 | 이상현 | Project Leader/Backend | SLAM 자율주행 및 서버, (추가) |
 | 김현주 | Project Manager/Firmware | (추가) |
 | 김준기 | Backend | Network(Can), (추가) |
-| 허준형 | Firmware/Frontend | (추가) |
+| 허준형 | Firmware/Frontend | STM32 구동제어, 웹 관제 대시보드 |
 | 정구빈 | Backend/Edge AI | Vision AI 및 영상/데이터 송신 파이프라인 구축 |
