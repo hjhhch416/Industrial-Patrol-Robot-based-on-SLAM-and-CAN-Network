@@ -57,6 +57,14 @@ webDashBoard
 |                  |                             |
 +------------------------------------------------+
 ```
+### 대시보드 제어 화면
+<img width="1100" height="650" alt="웹 대시보드" src="https://github.com/user-attachments/assets/21b62217-4d76-4f35-88b9-d4b07d45e682" />
+
+### 대시보드 맵 화면
+<img width="1100" height="650" alt="웹 대시보드2" src="https://github.com/user-attachments/assets/a46c909b-c6d7-46f5-b504-439406b363a3" />
+
+### 모바일 반응형 화면
+<img width="1100" height="650" alt="웹 대시보드 모바일" src="https://github.com/user-attachments/assets/53f2000e-e1f0-416c-a0c6-1802f851015a" />  
 
 ---
 
