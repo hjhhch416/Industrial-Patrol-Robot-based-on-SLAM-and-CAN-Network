@@ -1,1 +1,240 @@
+# Raspberry Pi 통합 제어 프로그램
+
+---
+
+## 역할 및 개요
+
+Raspberry Pi 5에서 실행되는 로봇 통합 제어 프로그램입니다.
+
+WebSocket으로 Node.js 서버의 명령을 수신하고, CAN USB 어댑터를 통해 STM32F446 / STM32F429에 명령을 전달합니다.
+자율주행 모드에서는 Nav2(ROS2)의 cmd_vel 명령을 CAN 모터 명령으로 변환하며, YOLO 객체 탐지 결과에 따라 경보를 발생시킵니다.
+
+| 항목 | 내용 |
+|---|---|
+| 플랫폼 | Raspberry Pi 5 |
+| 언어 | C (gcc) |
+| 빌드 | Makefile |
+| 통신 | CAN USB, WebSocket, UDP |
+| 주요 기능 | 원격 제어, 자율주행 중계, 경보 처리, 센서 데이터 송신 |
+
+---
+
+## 주요 기능
+
+- WebSocket을 통한 원격 명령 수신 (모터, 서보, 모드 전환, 조명, 경보)
+- CAN USB 어댑터를 통해 STM32F446 / STM32F429로 명령 전달
+- Nav2 cmd_vel UDP 수신 → CAN 모터 명령 변환 (자율주행 모드)
+- YOLO 위험 감지 UDP 수신 → 부저 / LED 경보 처리
+- 수동 모드: 모터 유지, 경고음 / LED만 동작
+- 자율주행 모드: 위험 감지 시 모터 즉시 정지 + 경보
+- 센서 데이터(속도, 거리, 조도 등) JSON으로 대시보드 송신
+- YOLO 스트리머를 별도 스레드로 실행
+
+---
+
+## 시스템 구조
+
+```text
+        Node.js 서버 (:5000)          Nav2 (:10000)     YOLO (:9999)
+               |                           |                  |
+           WebSocket                      UDP               UDP
+               |                           |                  |
++──────────────────────────────────────────────────────────────────+
+│                    Raspberry Pi 5  (main)                        │
+│                                                                  │
+│   ws_client      nav2_bridge           alarm                     │
+│   명령 수신        cmd_vel 수신          위험 감지                  │
+│   JSON 송신        모터값 변환            부저/LED 제어              │
+│                                                                  │
+│                       robot_can                                  │
+│                  can_send / can_rx_poll                          │
+│                                                                  │
+│                       canusb_lib                                 │
+│                  /dev/ttyUSB0  2Mbps                             │
++──────────────────────────────────────────────────────────────────+
+               |                        |
+              CAN                      CAN
+               |                        |
+        STM32F446                  STM32F429
+     모터 / 서보 / 초음파          부저 / LED / 조도
+```
+
+---
+
+## 폴더 구조
+
+```text
+main/
+├── main.c            # 메인 루프 (100ms 주기, 5개 태스크)
+├── ws_client.c/h     # WebSocket 클라이언트
+├── alarm.c/h         # 경보 처리 (수동/자율주행)
+├── nav2_bridge.c/h   # Nav2 cmd_vel → CAN 변환
+├── robot_can.c/h     # CAN 프로토콜 레이어
+├── canusb_lib.c/h    # CAN USB 시리얼 드라이버
+├── util.c/h          # UDP 소켓, 타이밍 유틸리티
+├── yolo_thread.c/h   # YOLO 스트리머 스레드
+└── makefile
+```
+
+---
+
+## 주요 파일
+
+| 파일 | 역할 |
+|---|---|
+| `main.c` | 초기화 및 메인 루프, 5개 태스크 순차 실행 |
+| `ws_client.c/h` | Node.js 서버 연결, 명령 수신, 센서 JSON 송신 |
+| `alarm.c/h` | YOLO 신호 기반 경보 상태 관리 |
+| `nav2_bridge.c/h` | Nav2 UDP 패킷 파싱 후 CAN 전송 |
+| `robot_can.c/h` | CAN ID 정의, 송수신 함수, F446/F429 파싱 |
+| `canusb_lib.c/h` | 시리얼 포트 초기화, 프레임 송수신 |
+| `util.c/h` | UDP 소켓 생성, 버퍼 소진 수신, ms/경과 시간 |
+| `yolo_thread.c/h` | YOLO Python 스크립트를 pthread로 실행 |
+
+---
+
+## CAN 프로토콜
+
+### 송신 (Raspberry Pi → STM32)
+
+| CAN ID | 대상 | 내용 |
+|---|---|---|
+| `0x100` | F446 | 모터 속도 (int16 L + int16 R, 빅엔디언) |
+| `0x300` | F446 | 서보 각도 (uint8, 0~180) |
+| `0x101` | F429 | RGB 조명 ON/OFF |
+| `0x102` | F429 | 부저 ON/OFF |
+| `0x103` | F429 | 경고 LED ON/OFF |
+| `0x104` | F429 | 모드 전환 (0=AUTO, 1=MANUAL) |
+
+```text
+모터 명령 (0x100):
+  Data[0] : Left Speed High
+  Data[1] : Left Speed Low
+  Data[2] : Right Speed High
+  Data[3] : Right Speed Low
+```
+
+### 수신 (STM32 → Raspberry Pi)
+
+| CAN ID | 출처 | 내용 |
+|---|---|---|
+| `0x200` | F446 | 상태 보고 (8바이트) |
+| `0x105` | F429 | 상태 보고 (5바이트) |
+
+```text
+F446 상태 (0x200):
+  Data[0] : AEB Flag
+  Data[1] : 서보 현재 각도
+  Data[2~3] : 초음파 거리 (cm, 빅엔디언)
+  Data[4~5] : 왼쪽 모터 속도 (빅엔디언)
+  Data[6~7] : 오른쪽 모터 속도 (빅엔디언)
+
+F429 상태 (0x105):
+  Data[0~1] : 조도 센서값 (빅엔디언)
+  Data[2]   : RGB LED 상태
+  Data[3]   : 경고 LED 상태
+  Data[4]   : 부저 상태
+```
+
+---
+
+## UDP 인터페이스
+
+| 포트 | 방향 | 형식 | 내용 |
+|---|---|---|---|
+| `:9999` | YOLO → RPi | `"1"` / `"0"` | 위험 감지 / 해제 |
+| `:10000` | Nav2 → RPi | `"LLLLRRRR"` | 모터 속도 (16진수 ASCII) |
+
+```text
+Nav2 패킷 예시: "01F4FE0C"
+  앞 4자리 = Left  = 0x01F4 = +500
+  뒤 4자리 = Right = 0xFE0C = -500
+```
+
+---
+
+## 경보 로직
+
+### 수동 모드
+- YOLO `1` 수신 → 부저 / LED ON (모터는 그대로 유지)
+- YOLO `0` 수신 또는 타이머 만료 → 부저 / LED OFF
+- 해제 후 쿨다운(기본 2초) 동안 재감지 무시
+
+### 자율주행 모드
+- YOLO `1` 수신 → 모터 즉시 정지 + 부저 / LED ON
+- 경보 중 1초마다 모터 정지 명령 재전송
+- YOLO `0` 수신 또는 타이머 만료 → 경보 해제 + Nav2 명령 재개
+
+| 설정값 | 기본값 |
+|---|---:|
+| 경보 지속 시간 | 3초 |
+| 쿨다운 | 2초 |
+
+---
+
+## 메인 루프 태스크
+
+메인 루프는 100ms 주기로 5개 태스크를 순차 실행합니다.
+
+| 태스크 | 함수 | 주기 |
+|---|---|---|
+| 1 | `ws_client_service()` | 매 루프 |
+| 2 | `ws_client_request_write()` | 매 루프 |
+| 3 | `can_rx_poll()` + `ws_client_set_status()` | 100ms |
+| 4 | `alarm_tick_manual()` | 매 루프 |
+| 5 | `alarm_tick_auto()` | 매 루프 |
+
+---
+
+## 설정값
+
+[main.c](main.c) 상단에서 변경합니다.
+
+| 항목 | 기본값 | 설명 |
+|---|---|---|
+| `SERVER_IP` | `"192.168.0.48"` | Node.js 서버 IP |
+| `SERVER_PORT` | `5000` | WebSocket 포트 |
+| `CAN_DEVICE` | `/dev/ttyUSB0` | CAN 어댑터 경로 |
+| `ALARM_DURATION_SEC` | `3` | 경보 지속 시간 |
+| `ALARM_COOLDOWN_SEC` | `2` | 쿨다운 시간 |
+| `MAX_MOTOR_VAL` | `500` | 모터 최대값 |
+| `SERVO_CENTER` | `90` | 서보 초기 각도 |
+
+---
+
+## 빌드 및 실행
+
+### 의존 라이브러리 설치
+
+```bash
+sudo apt install libwebsockets-dev libjansson-dev
+```
+
+### 빌드
+
+```bash
+make
+```
+
+### 실행
+
+```bash
+sudo ./robot_main
+```
+
+### 빌드 결과물 삭제
+
+```bash
+make clean
+```
+
+---
+
+## 주의사항
+
+- CAN 어댑터는 `/dev/ttyUSB0`에 연결합니다. 다른 USB 시리얼 장치가 먼저 연결되어 있으면 `ttyUSB1` 등으로 할당될 수 있습니다.
+- Node.js 서버(`192.168.0.48:5000`)가 실행 중이어야 WebSocket이 연결됩니다.
+- YOLO 스크립트 경로(`/home/lee/project/test4/yolo_streamer.py`)는 실행 환경에 맞게 수정이 필요합니다.
+- CAN bitrate는 STM32와 동일하게 2Mbps로 설정되어 있어야 합니다.
+- `sudo` 권한이 필요합니다 (CAN 어댑터 접근, YOLO 스크립트 실행).
 
