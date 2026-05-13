@@ -83,6 +83,9 @@ SLAM 및 CAN 네트워크 기반 산업용 순찰 로봇
 
 ### 3. Vision AI 안전 감지
 
+**[ 🛠️ Core Technology ]**
+`YOLOv5nu` `Real-time Inference` `Debouncing Logic` `CAN/UDP Communication`
+
 Raspberry Pi 5에서 카메라 영상을 처리하고, YOLOv5nu 모델을 이용해 작업자를 인식합니다.  
 안전모 또는 안전조끼 미착용이 감지되면 경고 신호를 제어부로 전달하여 모터를 정지시킵니다.
 
@@ -116,11 +119,30 @@ Raspberry Pi 5에서 카메라 영상을 처리하고, YOLOv5nu 모델을 이용
   </table>
 </div>
 
-- 실시간 카메라 영상 처리
-- YOLOv5nu 기반 작업자 감지
-- 안전장비 미착용 상태 판단
-- 오탐 방지를 위한 Debouncing 적용
-- 위험 감지 시 LED / 부저 경고 동작
+## 핵심 엔지니어링 포인트 (Logic Implementation)
+
+임베디드 시스템의 자원 제약과 현장의 변수를 극복하기 위해 적용된 핵심 로직입니다.
+
+### ⚡ 연산 효율화 (Frame Skipping)
+라즈베리 파이의 CPU 부하를 최적화하기 위해 모든 프레임을 추론하지 않고, 3프레임마다 1번씩 연산을 수행하여 자원 점유율을 약 30% 절감했습니다.
+```python
+PROCESS_EVERY_N = 3  # 3프레임당 1회 추론 수행
+```
+
+### 🛡️ 지능형 경보 필터링 (1.5s Trigger Delay)
+
+순간적인 오탐지(False Positive)로 인한 빈번한 경보를 방지하기 위해, 위험 상태가 **1.5초 이상 지속**될 경우에만 최종 위험(`DANGER`) 상태로 확정하고 UDP 신호를 전송합니다.
+```python
+TRIGGER_DELAY = 1.5  # 상태 확정 지연 시간(초)
+
+# 상태 유지 시간 계산 및 확정 로직
+
+if (time.time() - state_start_time) >= TRIGGER_DELAY:
+
+    confirmed_flag = current_raw_danger
+
+    send_udp(confirmed_flag)
+```
 
 ### 4. CAN 기반 분산 제어
 
