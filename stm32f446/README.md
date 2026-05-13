@@ -104,6 +104,7 @@ stm32f446
 ---
 
 ## ⏱️ 핀맵 및 타이머
+<img width="598" height="555" alt="stm32446_pinmap" src="https://github.com/user-attachments/assets/5bcd8f33-422b-4123-b73d-216a81734857" />
 
 | 기능 | 설정 | 설명 |
 |---|---|---|
@@ -186,6 +187,7 @@ Data[7] : Right Speed Low
 ## 🛑 안전 정지 로직
 
 초음파 센서로 측정한 거리를 기준으로 후진 중 장애물이 가까워지면 모터 출력을 0으로 제한합니다.
+<img width="694" height="194" alt="ultrasonic_logic" src="https://github.com/user-attachments/assets/43046851-b81f-4fc1-adf6-41812cf4f5ac" />
 
 | 항목 | 값 |
 |---|---:|
