@@ -1,38 +1,69 @@
-# STM32 Rover Control Firmware
-
-STM32 기반 로버 제어 펌웨어입니다.  
-CAN 통신으로 상위 제어기에서 **모터 속도**와 **서보 각도**를 수신하고, 초음파 센서를 이용해 후진 중 장애물이 가까워지면 자동으로 정지하는 기능을 포함합니다.
+# 🔧 STM32F446 Rover Control Firmware
 
 ---
 
-## 주요 기능
+## 📌 역할 및 개요
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/bb073d51-30e2-41bc-a275-776d4f3fd4b6"
+       width="180"
+       alt="stm32f446 board" />
+</p>
 
-- CAN 통신 기반 모터 속도 명령 수신
-- CAN 통신 기반 서보 각도 명령 수신
-- 좌/우 DC 모터 PWM 제어
-- 서보 모터 각도 제어
+STM32F446 보드는 로버의 하위 제어 노드로 동작합니다.
+
+Raspberry Pi 또는 상위 제어기에서 CAN 통신으로 **좌/우 모터 속도 명령**과 **서보 카메라 각도 명령**을 수신하고, STM32는 DC 모터, 서보 모터, 초음파 센서를 제어합니다.
+
+후진 중 초음파 센서로 장애물이 감지되면 모터 출력을 0으로 제한하여 안전 정지를 수행합니다.
+
+| 항목 | 내용 |
+|---|---|
+| MCU | STM32F446 |
+| 언어 | C, STM32 HAL |
+| 통신 | CAN |
+| 주요 기능 | 모터 제어, 서보 제어, 초음파 거리 측정, 안전 정지, 상태 송신 |
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/cade5bed-9518-4538-a788-6cb650438f52"
+       width="360"
+       alt="rover5 motor driver" />
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/1e37e695-57f1-4b2a-89c4-bfb9659fb245"
+       width="720"
+       alt="stm32f446 motor wiring" />
+</p>
+
+---
+
+## ✨ 주요 기능
+
+- CAN 기반 좌/우 모터 속도 명령 수신
+- CAN 기반 서보 카메라 각도 명령 수신
+- DC 모터 PWM/DIR 제어
+- 서보 모터 PWM 제어
 - 초음파 센서 거리 측정
-- 후진 중 장애물 감지 시 자동 정지
-- CAN을 통한 상태 정보 송신
+- 후진 중 장애물 감지 시 안전 정지
+- CAN 상태 데이터 송신
 
 ---
 
-## 시스템 구조
+## 🧩 시스템 구조
 
 ```text
-상위 제어기 / Raspberry Pi
+Raspberry Pi / Server
         |
         | CAN
         v
-+----------------+
-|    STM32       |
-|                |
-|  CAN 수신      |
-|  모터 제어     |
-|  서보 제어     |
-|  초음파 측정   |
-|  안전 정지     |
-+----------------+
++---------------------+
+|      STM32F446      |
+|                     |
+|  CAN RX/TX          |
+|  Motor Control      |
+|  Servo Control      |
+|  Ultrasonic Sensor  |
+|  Safe Stop Logic    |
++---------------------+
         |
         v
 DC Motor / Servo / Ultrasonic Sensor
@@ -40,102 +71,61 @@ DC Motor / Servo / Ultrasonic Sensor
 
 ---
 
-## 파일 구성
+## 📁 폴더 구조
 
 ```text
-.
-└── APP
-    └── ap
-        ├── ap.c
-        ├── ap.h
-        ├── ap_def.h
-        ├── motor.c
-        ├── motor.h
-        ├── ultrasonic.c
-        ├── ultrasonic.h
-        ├── safe_distance.c
-        ├── safe_distance.h
-        ├── can_comm.c
-        ├── can_comm.h
-        ├── servomotor.c
-        └── servomotor.h
+stm32f446
+├── App/ap              # 사용자 작성 제어 모듈
+├── Core                # STM32CubeMX 생성 코드
+├── Drivers             # HAL/CMSIS 드라이버
+├── cmake               # CMake 관련 설정
+├── CMakeLists.txt
+├── CMakePresets.json
+├── STM32F446XX_FLASH.ld
+├── startup_stm32f446xx.s
+├── stm32f446.ioc
+└── README.md
 ```
 
 ---
 
-## 파일별 역할
+## 🗂️ 주요 파일
 
 | 파일 | 역할 |
 |---|---|
 | `ap.c` | 전체 제어 흐름 관리 |
-| `motor.c/h` | 좌/우 DC 모터 PWM 및 방향 제어 |
+| `ap.h` | 핀맵 및 주요 함수 선언 |
+| `motor.c/h` | DC 모터 PWM 및 방향 제어 |
+| `servomotor.c/h` | 서보 모터 각도 제어 |
 | `ultrasonic.c/h` | 초음파 센서 거리 측정 |
 | `safe_distance.c/h` | 거리 기반 안전 정지 판단 |
 | `can_comm.c/h` | CAN 송수신 처리 |
-| `servomotor.c/h` | 서보 모터 각도 제어 |
-| `ap.h` | 핀맵 및 주요 함수 선언 |
-| `ap_def.h` | 공통 정의용 헤더 |
 
 ---
 
-## 사용 하드웨어
+## ⏱️ 핀맵 및 타이머
 
-| 구분 | 내용 |
-|---|---|
-| MCU | STM32F4 계열 |
-| Motor | DC 모터 2개 |
-| Servo | SG90 계열 서보 모터 |
-| Sensor | HC-SR04 계열 초음파 센서 |
-| Communication | CAN |
-| Timer | TIM2, TIM3, TIM4 |
-
----
-
-## 주요 핀 및 타이머
-
-```c
-#define MOTOR_PWM_TIM   (&htim3)
-#define MOTOR_L_CH      TIM_CHANNEL_1
-#define MOTOR_R_CH      TIM_CHANNEL_2
-
-#define ECHO_TIM        (&htim2)
-#define ECHO_CH         TIM_CHANNEL_1
-
-#define TRIG_PORT       TRIG_ultrasonic_GPIO_Port
-#define TRIG_PIN        TRIG_ultrasonic_Pin
-```
-
-| 타이머 | 용도 |
-|---|---|
-| TIM2 | 초음파 ECHO Input Capture |
-| TIM3 | 좌/우 DC 모터 PWM |
-| TIM4 | 서보 모터 PWM |
+| 기능 | 설정 | 설명 |
+|---|---|---|
+| Left Motor PWM | TIM3_CH1 | 왼쪽 모터 속도 제어 |
+| Right Motor PWM | TIM3_CH2 | 오른쪽 모터 속도 제어 |
+| Left Motor DIR | `DIR1_rover` | 왼쪽 모터 방향 제어 |
+| Right Motor DIR | `DIR2_rover` | 오른쪽 모터 방향 제어 |
+| Ultrasonic ECHO | TIM2_CH1 | 초음파 ECHO Input Capture |
+| Ultrasonic TRIG | `TRIG_ultrasonic` | 초음파 Trigger 출력 |
+| Servo PWM | TIM4_CH1 | 카메라 서보 모터 제어 |
+| CAN RX/TX | CAN1 | 상위 제어기와 CAN 통신 |
 
 ---
 
-## 전체 동작 흐름
-
-```text
-1. CAN으로 모터 속도와 서보 각도 수신
-2. 수신한 각도로 서보 모터 제어
-3. 수신한 속도로 좌/우 모터 목표 속도 설정
-4. 초음파 센서로 거리 측정
-5. 후진 중 장애물이 가까우면 안전 정지 판단
-6. 안전 정지 상태이면 모터 속도를 0으로 제한
-7. 최종 모터 속도를 PWM으로 출력
-8. 현재 상태를 CAN으로 송신
-```
-
----
-
-## CAN 메시지 구조
+## 📡 CAN 프로토콜
 
 ### 모터 명령 수신
 
 | 항목 | 내용 |
 |---|---|
 | CAN ID | `0x100` |
-| 방향 | 상위 제어기 → STM32 |
+| 방향 | Raspberry Pi → STM32 |
 | 데이터 | 좌/우 모터 속도 |
 
 ```text
@@ -145,15 +135,20 @@ Data[2] : Right Speed High
 Data[3] : Right Speed Low
 ```
 
----
+속도 데이터는 signed 16-bit 정수로 해석합니다.
+
+```text
+Left Speed  = int16_t((Data[0] << 8) | Data[1])
+Right Speed = int16_t((Data[2] << 8) | Data[3])
+```
 
 ### 서보 명령 수신
 
 | 항목 | 내용 |
 |---|---|
 | CAN ID | `0x300` |
-| 방향 | 상위 제어기 → STM32 |
-| 데이터 | 서보 각도 |
+| 방향 | Raspberry Pi → STM32 |
+| 데이터 | 서보 목표 각도 |
 
 ```text
 Data[0] : Servo Angle
@@ -161,15 +156,14 @@ Data[0] : Servo Angle
 
 서보 각도 범위는 `0 ~ 180도`입니다.
 
----
 
 ### 상태 송신
 
 | 항목 | 내용 |
 |---|---|
 | CAN ID | `0x200` |
-| 방향 | STM32 → 상위 제어기 |
-| 송신 주기 | 1초 |
+| 방향 | STM32 → Raspberry Pi |
+| 송신 주기 | 1000 ms |
 
 ```text
 Data[0] : AEB Flag
@@ -182,13 +176,16 @@ Data[6] : Right Speed High
 Data[7] : Right Speed Low
 ```
 
+| AEB Flag | 의미 |
+|---|---|
+| `0` | 정상 |
+| `1` | 안전 정지 중 |
+
 ---
 
-## 안전 정지 로직
+## 🛑 안전 정지 로직
 
-초음파 센서로 측정한 거리를 기준으로 후진 중 장애물이 가까우면 모터 출력을 강제로 0으로 만듭니다.
-
-현재 설정값은 다음과 같습니다.
+초음파 센서로 측정한 거리를 기준으로 후진 중 장애물이 가까워지면 모터 출력을 0으로 제한합니다.
 
 | 항목 | 값 |
 |---|---:|
@@ -198,7 +195,7 @@ Data[7] : Right Speed Low
 | 해제 조건 | 2회 연속 |
 | 센서 타임아웃 | 200 ms |
 
-안전 정지는 현재 **후진 상황에서만 적용**됩니다.
+안전 정지는 현재 **후진 명령에서만 적용**됩니다.
 
 ```c
 if (l_tgt_raw < 0 && r_tgt_raw < 0) {
@@ -211,7 +208,7 @@ if (l_tgt_raw < 0 && r_tgt_raw < 0) {
 }
 ```
 
-안전 정지 상태가 되면 최종 모터 명령은 0으로 제한됩니다.
+안전 정지 상태에서는 최종 모터 명령이 0으로 제한됩니다.
 
 ```c
 if (sd->state == SAFE_ESTOP) {
@@ -222,40 +219,7 @@ if (sd->state == SAFE_ESTOP) {
 
 ---
 
-## 주요 초기화 코드
-
-`apInit()`에서 전체 모듈을 초기화합니다.
-
-```c
-void apInit(void) {
-  uint32_t pwm_max = __HAL_TIM_GET_AUTORELOAD(&htim3);
-
-  motor_init(&mL, MOTOR_PWM_TIM, MOTOR_L_CH, MOTOR_DIR_PORT, MOTOR_L_DIR_PIN,
-             pwm_max, 0);
-  motor_init(&mR, MOTOR_PWM_TIM, MOTOR_R_CH, MOTOR_DIR_PORT, MOTOR_R_DIR_PIN,
-             pwm_max, 1);
-
-  motor_start(&mL);
-  motor_start(&mR);
-
-  motor_set_ramp_step(&mL, 10);
-  motor_set_ramp_step(&mR, 10);
-
-  ultrasonic_init(&us, &htim2, ECHO_CH, TRIG_PORT, TRIG_PIN, 50);
-
-  safe_distance_init(&sd, 15, 20, 2, 2, 200);
-
-  Servo_Init(&myServo, &htim4, TIM_CHANNEL_1);
-  Servo_SetAngle(&myServo, target_angle);
-
-  extern CAN_HandleTypeDef hcan1;
-  can_comm_init(&hcan1, on_can_motor_cmd, on_can_servo_cmd);
-}
-```
-
----
-
-## 주요 제어 주기
+## ⚙️ 제어 주기
 
 | 항목 | 주기 |
 |---|---:|
@@ -267,81 +231,33 @@ void apInit(void) {
 
 ---
 
-## 모듈별 핵심 설명
-
-### Motor
-
-DC 모터는 PWM과 DIR 핀으로 제어합니다.
+## 🧱 CubeMX 설정
 
 ```text
-speed > 0  : 정방향
-speed < 0  : 역방향
-speed = 0  : 정지
+TIM2: Input Capture, CH1, 초음파 ECHO 측정
+TIM3: PWM, CH1/CH2, 좌/우 모터 제어
+TIM4: PWM, CH1, 서보 모터 제어
+CAN1: Standard ID, RX FIFO0 Interrupt 사용
+GPIO: DIR 핀 Output, TRIG 핀 Output
 ```
 
-Ramp 기능을 사용하여 속도가 급격히 변하지 않도록 합니다.
+### 설정 체크리스트
+
+- TIM2 Input Capture interrupt 활성화
+- TIM3 PWM CH1/CH2 활성화
+- TIM4 PWM CH1 활성화
+- CAN1 RX FIFO0 interrupt 활성화
+- STM32와 Raspberry Pi의 CAN bitrate 동일하게 설정
+- TIM2는 `1 tick = 1us` 설정 권장
+- 서보 PWM은 `50Hz` 설정 권장
 
 ---
 
-### Ultrasonic
-
-초음파 센서는 TRIG 핀으로 10us 펄스를 출력하고, ECHO 핀은 TIM Input Capture로 측정합니다.
-
-거리 계산은 다음 식을 사용합니다.
-
-```text
-distance_cm = echo_us / 58
-```
-
----
-
-### Safe Distance
-
-초음파 측정값을 기반으로 안전 상태를 판단합니다.
-
-```text
-RUN      : 정상 주행 가능
-ESTOP    : 안전 정지 상태
-```
-
-거리 값은 단순히 바로 사용하지 않고, 비정상 값 제거와 필터링을 거친 뒤 안전 판단에 사용합니다.
-
----
-
-### Servo
-
-서보 모터는 PWM 펄스폭으로 각도를 제어합니다.
-
-```c
-#define SERVO_MIN_PULSE 500
-#define SERVO_MAX_PULSE 2500
-```
-
-각도 범위는 `0 ~ 180도`입니다.
-
----
-
-## CubeMX 설정 체크리스트
-
-- TIM3 PWM 활성화
-  - Channel 1: Left Motor
-  - Channel 2: Right Motor
-- TIM2 Input Capture 활성화
-  - 초음파 ECHO 측정용
-  - 1 tick = 1us 권장
-- TIM4 PWM 활성화
-  - 서보 모터 제어용
-  - 50Hz 권장
-- CAN1 활성화
-  - RX FIFO0 interrupt 사용
-- DIR 핀 GPIO Output 설정
-- TRIG 핀 GPIO Output 설정
-
----
-
-## 인터럽트 연결
+## 🔔 인터럽트 연결
 
 ### 초음파 Input Capture
+
+`main.c`의 `HAL_TIM_IC_CaptureCallback()`에서 초음파 캡처 함수를 호출합니다.
 
 ```c
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
@@ -352,6 +268,8 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 
 ### CAN RX
 
+`main.c`의 `HAL_CAN_RxFifo0MsgPendingCallback()`에서 CAN 수신 처리 함수를 호출합니다.
+
 ```c
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
@@ -361,18 +279,42 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 
 ---
 
-## 주의사항
+## 🏗️ 빌드 및 플래시
 
-- 서보 명령 CAN ID는 실제 코드 기준 `0x300`입니다.
-- 초음파 거리 계산을 위해 TIM2는 1us 단위로 카운트되도록 설정하는 것이 좋습니다.
-- 서보 PWM은 50Hz 기준으로 설정하는 것이 일반적입니다.
-- 현재 안전 정지는 후진 명령에서만 적용됩니다.
-- 전진 장애물 감지를 추가하려면 안전 정지 적용 조건을 수정해야 합니다.
+STM32CubeIDE에서 프로젝트를 열고 빌드한 뒤 보드에 업로드합니다.
+
+```text
+STM32CubeIDE → Import Project → Build → Flash
+```
+
+CMake를 사용하는 경우 다음 명령으로 빌드할 수 있습니다.
+
+```bash
+cmake --list-presets
+cmake --preset <preset-name>
+cmake --build --preset <build-preset-name>
+```
 
 ---
 
-## 프로젝트 요약
+## ⚠️ 주의사항
 
-이 프로젝트는 STM32를 이용해 로버의 DC 모터, 서보 모터, 초음파 센서, CAN 통신을 통합 제어하는 펌웨어입니다.
+- 모터 명령 CAN ID는 `0x100`입니다.
+- 서보 명령 CAN ID는 `0x300`입니다.
+- 상태 송신 CAN ID는 `0x200`입니다.
+- CAN bitrate는 STM32와 Raspberry Pi에서 반드시 동일해야 합니다.
+- 초음파 거리 측정을 위해 TIM2는 1us 단위로 설정하는 것이 좋습니다.
+- 서보 PWM은 50Hz 기준으로 설정하는 것이 일반적입니다.
+- 현재 안전 정지는 후진 상황에서만 적용됩니다.
+- 전진 장애물 감지를 추가하려면 안전 정지 적용 조건을 수정해야 합니다.
+- 모터 방향이 반대로 동작하면 `dir_invert` 값 또는 모터 배선을 확인해야 합니다.
 
-상위 제어기에서 CAN으로 주행 명령을 보내면 STM32가 모터와 서보를 제어하고, 후진 중 초음파 센서로 장애물을 감지하면 자동으로 모터 출력을 0으로 제한하여 안전 정지를 수행합니다.
+---
+
+## 📝 프로젝트 요약
+
+이 펌웨어는 STM32F446을 이용해 로버의 DC 모터, 서보 모터, 초음파 센서, CAN 통신을 통합 제어합니다.
+
+Raspberry Pi 또는 상위 제어기에서 CAN으로 주행 명령과 서보 각도 명령을 보내면 STM32가 이를 수신하여 모터와 서보를 제어합니다.
+
+또한 후진 중 초음파 센서로 장애물을 감지하면 모터 출력을 0으로 제한하여 안전 정지를 수행합니다.

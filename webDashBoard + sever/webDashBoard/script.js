@@ -30,9 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
             videoBufferSize: 512 * 1024,
             preserveDrawingBuffer: false
         });
-        console.log(`카메라 연결 시도: ws://${host}:9999/`);
+        console.log(`🎥 카메라 연결 시도: ws://${host}:9999/`);
     } catch (e) {
-        console.error("카메라 초기화 실패:", e);
+        console.error("❌ 카메라 초기화 실패:", e);
     }
 
     try {
@@ -41,13 +41,13 @@ document.addEventListener('DOMContentLoaded', () => {
         autoplay: true,
         audio: false,
         onSourceEstablished: () => {
-            console.log("맵 스트림 연결 성공");
+            console.log("🗺️ 맵 스트림 연결 성공");
             document.getElementById('map-placeholder').style.display = 'none';
             document.getElementById('map-canvas').style.display = 'block';
         }
     });
 } catch (e) {
-    console.error("맵 초기화 실패:", e);
+    console.error("❌ 맵 초기화 실패:", e);
 }
     
     // === 3. Socket.io 통신 로직 ===

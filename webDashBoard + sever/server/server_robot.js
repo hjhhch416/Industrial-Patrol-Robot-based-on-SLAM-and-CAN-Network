@@ -44,7 +44,7 @@ function startStreams() {
                 '-bf': '0'
             }
         });
-        console.log(`카메라 스트림 시작 (Port: ${VIDEO_WS_PORT})`);
+        console.log(`🎥 카메라 스트림 시작 (Port: ${VIDEO_WS_PORT})`);
     }
 
     // 2. 맵 스트림 (10000) - 인코더 에러 수정 버전
@@ -64,14 +64,14 @@ function startStreams() {
                 '-threads': '4'            // 멀티 코어 사용
             }
         });
-        console.log(`맵 스트림 시작 (Port: ${MAP_WS_PORT})`);
+        console.log(`🗺️ 맵 스트림 시작 (Port: ${MAP_WS_PORT})`);
     }
 }
 
 // --- 로봇 데이터 통신 (WebSocket) ---
 const wssRobot = new WebSocket.Server({ port: ROBOT_DATA_PORT });
 wssRobot.on('connection', (ws) => {
-    console.log('[로봇] 연결됨');
+    console.log('🤖 [로봇] 연결됨');
     robotSocket = ws;
     startStreams();
 
@@ -85,20 +85,20 @@ wssRobot.on('connection', (ws) => {
     });
 
     ws.on('close', () => {
-        console.log('[로봇] 연결 종료');
+        console.log('❌ [로봇] 연결 종료');
         robotSocket = null;
     });
 });
 
 // --- 사용자 웹 통신 (Socket.io) ---
 io.on('connection', (socket) => {
-    console.log('[웹] 사용자 접속');
+    console.log('👤 [웹] 사용자 접속');
     startStreams();
 
     socket.on('user_to_server', (cmd) => {
         if (robotSocket && robotSocket.readyState === WebSocket.OPEN) {
             robotSocket.send(cmd);
-            console.log(`명령 전달 -> 로봇: ${cmd}`);
+            console.log(`🚀 명령 전달 -> 로봇: ${cmd}`);
         } else {
             socket.emit('server_msg', '로봇과 연결되어 있지 않습니다.');
         }
@@ -112,11 +112,11 @@ io.on('connection', (socket) => {
 httpServer.listen(WEB_SERVER_PORT, () => {
     console.log(`
     ================================================
-    통합 로봇 관제 서버 가동 중
-    웹 주소: http://localhost:${WEB_SERVER_PORT}
-    로봇 포트: ${ROBOT_DATA_PORT}
-    카메라 포트: ${VIDEO_WS_PORT}
-    맵 스트림 포트: ${MAP_WS_PORT}
+    🚀 통합 로봇 관제 서버 가동 중
+    🔗 웹 주소: http://localhost:${WEB_SERVER_PORT}
+    🤖 로봇 포트: ${ROBOT_DATA_PORT}
+    🎥 카메라 포트: ${VIDEO_WS_PORT}
+    🗺️ 맵 스트림 포트: ${MAP_WS_PORT}
     ================================================
     `);
 });
