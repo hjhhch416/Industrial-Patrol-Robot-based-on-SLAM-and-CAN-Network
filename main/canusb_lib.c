@@ -77,5 +77,5 @@ int receive_can_frame(int tty_fd, CAN_Frame *out_frame) {
             }
         }
     }
-    return 0; // 아직 미완성 (더 읽어야 함)
+    return 0;
 }

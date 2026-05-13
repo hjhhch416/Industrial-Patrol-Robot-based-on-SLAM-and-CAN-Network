@@ -63,12 +63,15 @@ void alarm_tick_manual(void)
         printf("  [UDP] 수신값=%d  alarm_active=%d\n",
                received, s_manual_active);
 
-    /* 쿨다운 체크 */
+    /* 쿨다운 체크: 경보 해제 직후 연속 재감지를 방지합니다.
+     * YOLO 모델이 프레임 경계에서 깜빡이면 경보가 반복 발생하기 때문입니다. */
     long long now_ms = get_ms();
     int in_cooldown  = (s_manual_end_ms > 0 &&
                        (now_ms - s_manual_end_ms) < (s_cooldown_sec * 1000LL));
 
-    /* 정상 → 경보 (쿨다운 중이면 무시) */
+    /* 정상 → 경보 (쿨다운 중이면 무시)
+     * 수동 모드에서는 운전자가 직접 조종하므로 모터는 건드리지 않고
+     * 경고음·LED만 켭니다. (auto 모드와의 핵심 차이) */
     if (received == 1 && !s_manual_active && !in_cooldown) {
         s_manual_active = 1;
         clock_gettime(CLOCK_MONOTONIC, &s_manual_start);
@@ -81,14 +84,14 @@ void alarm_tick_manual(void)
                (s_cooldown_sec * 1000LL) - (now_ms - s_manual_end_ms));
     }
 
-    /* 경보 중: 즉시 해제(YOLO=0) or 타이머 해제 */
+    /* 경보 해제 조건: YOLO가 0을 보내면 즉시 해제, 아니면 타이머 만료 후 해제 */
     if (s_manual_active) {
         double elapsed    = elapsed_sec(s_manual_start);
-        int    early_clear = (received == 0);
+        int    early_clear = (received == 0);  // YOLO가 위험 없음을 명시적으로 통보
 
         if (elapsed >= s_alarm_duration || early_clear) {
             s_manual_active  = 0;
-            s_manual_end_ms  = get_ms();  // 쿨다운 시작
+            s_manual_end_ms  = get_ms();  // 이 시점부터 쿨다운 시작
             can_send(s_can_fd, ID_F429_BUZZER, &OFF_VAL, 1, "부저 OFF");
             can_send(s_can_fd, ID_F429_LED,    &OFF_VAL, 1, "LED OFF");
             s_red_led = 0; s_buzzer = 0;
@@ -110,13 +113,15 @@ void alarm_tick_auto(void)
     int in_cooldown     = (s_alarm_end_ms > 0 &&
                           (now_ms - s_alarm_end_ms) < (s_cooldown_sec * 1000LL));
 
-    /* 정상 → 경보 */
+    /* 정상 → 경보
+     * 자율주행 모드에서는 Nav2가 모터를 제어하므로 경보 시 모터도 강제 정지합니다.
+     * (아래에서 STATE_ALARM이면 nav2_recv_and_send를 호출하지 않음) */
     if (received == 1 && s_state == STATE_NORMAL && !in_cooldown) {
         s_state = STATE_ALARM;
         clock_gettime(CLOCK_MONOTONIC, &s_alarm_start);
         printf("\n>>> [자율주행] 위험 감지! 정지 및 경보 발생\n");
 
-        /* 자율주행: 모터도 즉시 정지 */
+        /* 자율주행: 모터도 즉시 정지 (수동 모드와의 핵심 차이) */
         static const uint8_t stop[4] = {0x00, 0x00, 0x00, 0x00};
         can_send(s_can_fd, ID_F446_MOTOR, stop,    4, "자율주행 모터 정지");
         can_send(s_can_fd, ID_F429_BUZZER, &ON_VAL, 1, "부저 ON");
@@ -144,9 +149,10 @@ void alarm_tick_auto(void)
                 printf(">>> [자율주행] 위험 해제 → 경보 즉시 종료 (%.1f초 경과)\n", elapsed);
             else
                 printf(">>> [자율주행] 경보 종료 → 쿨다운 %d초 후 복귀\n", s_cooldown_sec);
-            nav2_recv_and_send();  // 해제 즉시 Nav2 명령 재개
+            nav2_recv_and_send();  // 해제 즉시 Nav2 명령 재개 (재개 지연 방지)
         } else {
-            /* 경보 중: 1초마다 MOTOR_STOP 재전송 */
+            /* 경보 중: 1초마다 MOTOR_STOP을 재전송합니다.
+             * STM32 측에서 명령이 일정 시간 안 오면 자체 복귀할 수 있기 때문입니다. */
             static long long last_stop_ms = 0;
             if (now_ms - last_stop_ms >= 1000) {
                 last_stop_ms = now_ms;

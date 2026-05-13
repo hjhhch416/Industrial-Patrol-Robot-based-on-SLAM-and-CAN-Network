@@ -22,14 +22,17 @@ void nav2_recv_and_send(void)
     char buf[16], latest[16] = {0};
     ssize_t n;
 
-    /* 버퍼 소진 — 가장 마지막(최신) 패킷만 사용 */
+    /* UDP 버퍼를 전부 비우고 마지막(최신) 패킷만 사용합니다.
+     * Nav2는 10Hz로 cmd_vel을 전송하는데 메인 루프(100ms)보다 빠를 수 있어
+     * 오래된 패킷을 그대로 쓰면 이미 지난 명령이 모터에 전달됩니다. */
     while ((n = recvfrom(s_cmdvel_fd, buf, sizeof(buf)-1, 0, NULL, NULL)) > 0) {
         buf[n] = '\0';
         strncpy(latest, buf, sizeof(latest)-1);
     }
     if (latest[0] == '\0' || strlen(latest) < 8) return;
 
-    /* "LLLLRRRR" 형식: 앞 4자리=L, 뒤 4자리=R */
+    /* UDP 패킷 포맷: "LLLLRRRR" (16진수 ASCII 8자리)
+     * 예: "01F4FE0C" → L=+500, R=-500 (int16_t 해석) */
     char l_str[5] = {0}, r_str[5] = {0};
     strncpy(l_str, latest,     4);
     strncpy(r_str, latest + 4, 4);
@@ -43,7 +46,7 @@ void nav2_recv_and_send(void)
     if (r >  s_max_motor) r =  s_max_motor;
     if (r < -s_max_motor) r = -s_max_motor;
 
-    /* 빅엔디언 4바이트 페이로드 조립 후 CAN 송신 */
+    /* STM32 수신 측이 빅엔디언을 기대하므로 상위 바이트를 먼저 씁니다. */
     uint8_t payload[4];
     payload[0] = (uint8_t)(l >> 8);
     payload[1] = (uint8_t)(l & 0xFF);

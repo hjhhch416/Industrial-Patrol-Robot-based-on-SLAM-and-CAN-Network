@@ -72,26 +72,26 @@ int main(void)
     if (init_main() < 0) return -1;
 
     while (1) {
-        // 태스크 1: WebSocket 이벤트 처리
+        // 태스크 1: WebSocket 이벤트 처리 (논블로킹, timeout=0)
         ws_client_service();
 
-        // 태스크 2: 대시보드 갱신 예약
+        // 태스크 2: 대시보드 갱신 예약 (다음 WRITEABLE 콜백에서 JSON 전송)
         ws_client_request_write();
 
         // 태스크 3: CAN 수신 (100ms 간격)
+        // WebSocket보다 낮은 빈도로 실행해 CAN 버스 부하를 줄입니다.
         {
             long long now_ms = get_ms();
             if (now_ms - last_can_rx_ms >= CAN_RX_INTERVAL_MS) {
                 last_can_rx_ms = now_ms;
 
-                can_rx_poll(can_fd);          // 버퍼 소진 + 파싱
+                can_rx_poll(can_fd);    // 버퍼를 한 번에 소진해 F446·F429 모두 파싱
 
                 F446Status_t f446 = {0};
                 F429Status_t f429 = {0};
-                can_recv_f446(&f446);         // F446 결과 가져오기
-                can_recv_f429(&f429);         // F429 결과 가져오기
+                can_recv_f446(&f446);   // poll에서 저장된 결과를 복사
+                can_recv_f429(&f429);
 
-                // 웹 대시보드 전송용 데이터 갱신
                 ws_client_set_status(&f446, &f429,
                                      alarm_get_red_led(),
                                      alarm_get_buzzer(),
@@ -100,16 +100,19 @@ int main(void)
             }
         }
 
-        // 태스크 4: 수동 모드 경보
+        /* 태스크 4·5는 매 루프 모두 호출됩니다.
+         * 내부에서 s_mode/s_state를 체크해 활성 상태일 때만 동작합니다. */
+
+        // 태스크 4: 수동 모드 경보 (모터 정지 없이 부저·LED만 제어)
         alarm_tick_manual();
 
-        // 태스크 5: 자율주행 모드 경보 + Nav2
+        // 태스크 5: 자율주행 모드 경보 + Nav2 cmd_vel 전달
         alarm_tick_auto();
 
-        usleep(LOOP_INTERVAL_US);
+        usleep(LOOP_INTERVAL_US);  // 100ms 슬립 (CPU 점유 방지)
     }
 
-    // 정리
+    // 정리 (while(1)로 도달 불가, SIGINT 처리 추가 시 필요)
     close(udp_fd);
     close(cmdvel_fd);
     close(can_fd);

@@ -20,7 +20,6 @@
 
 /* ─────────────────────────────────────────────────
  * create_udp_socket()
- *   원래 통합Main.c 255~281줄. 내용 동일.
  * ───────────────────────────────────────────────── */
 int create_udp_socket(int port)
 {
@@ -30,13 +29,15 @@ int create_udp_socket(int port)
         return -1;
     }
 
+    /* 프로세스 재시작 시 이전 바인딩이 TIME_WAIT 상태로 남아 있어도
+     * 같은 포트를 즉시 재사용할 수 있도록 합니다. */
     int opt = 1;
     setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
 
     struct sockaddr_in addr = {
         .sin_family      = AF_INET,
         .sin_port        = htons(port),
-        .sin_addr.s_addr = INADDR_ANY
+        .sin_addr.s_addr = INADDR_ANY  // 모든 인터페이스에서 수신
     };
 
     if (bind(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
@@ -45,6 +46,7 @@ int create_udp_socket(int port)
         return -1;
     }
 
+    /* 논블로킹: 메인 루프가 UDP 대기 때문에 블로킹되지 않도록 합니다. */
     fcntl(fd, F_SETFL, O_NONBLOCK);
     printf("[*] UDP 소켓 준비 완료 (포트 %d)\n", port);
     return fd;
@@ -52,19 +54,21 @@ int create_udp_socket(int port)
 
 /* ─────────────────────────────────────────────────
  * recv_latest_udp()
- *   원래 통합Main.c 284~297줄. 내용 동일.
  * ───────────────────────────────────────────────── */
 int recv_latest_udp(int udp_fd)
 {
     char    buf[8];
-    int     latest = -1;
+    int     latest = -1;  // 기본값: 이번 루프에 수신 없음
     ssize_t n;
 
+    /* 버퍼를 전부 비우고 마지막 값만 사용합니다.
+     * 루프 간격(100ms) 동안 여러 패킷이 쌓일 수 있으며,
+     * 가장 최신 YOLO 판정만이 현재 상황을 반영합니다. */
     while ((n = recvfrom(udp_fd, buf, sizeof(buf) - 1,
                          0, NULL, NULL)) > 0) {
         buf[n] = '\0';
-        if      (buf[0] == '1') latest = 1;
-        else if (buf[0] == '0') latest = 0;
+        if      (buf[0] == '1') latest = 1;  // 위험 감지
+        else if (buf[0] == '0') latest = 0;  // 위험 해제
     }
     return latest;
 }

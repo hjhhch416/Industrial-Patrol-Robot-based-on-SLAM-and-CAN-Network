@@ -10,15 +10,20 @@
 
 static void *yolo_stream_thread(void *arg)
 {
-    printf("📹 [YOLO] 시스템 안정화 대기 중 (3초)...\n");
+    printf("[YOLO] 시스템 안정화 대기 중 (3초)...\n");
+    /* CAN 어댑터·UDP 소켓·WebSocket이 모두 초기화될 때까지 기다립니다.
+     * YOLO가 너무 일찍 뜨면 UDP 전송 대상 소켓이 아직 없어 패킷이 유실됩니다. */
     sleep(3);
-    // CAN/소켓/WebSocket 초기화 완료까지 3초 대기
 
-    system("pkill -9 ffmpeg");           // 이전 ffmpeg 프로세스 종료
-    system("pkill -f yolo_streamer.py"); // 이전 YOLO 스크립트 종료
+    /* 이전 실행에서 남은 프로세스를 정리합니다.
+     * 비정상 종료 후 재시작 시 포트 충돌·GPU 메모리 점유를 막기 위함입니다. */
+    system("pkill -9 ffmpeg");
+    system("pkill -f yolo_streamer.py");
     sleep(1);
 
-    printf("📹 [YOLO] 영상 처리 및 송출 프로세스 시작...\n");
+    printf("[YOLO] 영상 처리 및 송출 프로세스 시작...\n");
+    /* system()으로 Python 스크립트를 자식 프로세스로 실행합니다.
+     * 스크립트가 종료되면 이 스레드도 함께 종료됩니다(정상 동작). */
     system("sudo /home/lee/yolo_env/bin/python3 /home/lee/project/test4/yolo_streamer.py");
 
     return NULL;

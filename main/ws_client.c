@@ -65,6 +65,8 @@ void ws_client_set_status(const F446Status_t *f446,
 static void send_robot_data(struct lws *wsi)
 {
     if (!wsi) return;
+    /* LWS_PRE: libwebsockets가 헤더를 앞에 쓰기 위해 예약하는 바이트 수.
+     * 실제 페이로드는 buf[LWS_PRE]부터 써야 합니다. */
     unsigned char buf[LWS_PRE + 512];
     unsigned char *p = &buf[LWS_PRE];
 
@@ -85,7 +87,7 @@ static void send_robot_data(struct lws *wsi)
     int n = sprintf((char *)p, "%s", serialized);
     lws_write(wsi, p, n, LWS_WRITE_TEXT);
     free(serialized);
-    json_decref(root);
+    json_decref(root);  // jansson 참조 카운트 해제 (메모리 누수 방지)
 }
 
 /* ── WebSocket 이벤트 콜백 ───────────────────────────── */
