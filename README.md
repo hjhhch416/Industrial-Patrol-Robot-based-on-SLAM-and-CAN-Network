@@ -3,10 +3,18 @@ SLAM 및 CAN 네트워크 기반 산업용 순찰 로봇
 
 <table>
   <tr>
-    <td align="center"><img width="100%" src="https://github.com/user-attachments/assets/28fa9fc0-1c5c-4ec4-ae9e-e11bdbeb8b4f" /></td>
-    <td align="center"><img width="100%" src="https://github.com/user-attachments/assets/71c28132-f9ac-4132-b884-b8513f7b850f" /></td>
-    <td align="center" width="25%"><img width="100%" src="https://github.com/user-attachments/assets/e308fde7-0250-40bb-8d23-2100975aa26c" /></td>
-    <td align="center"><img width="100%" src="https://github.com/user-attachments/assets/a431b65f-a0f1-4496-a931-85e59f26f6e1" /></td>
+    <td align="center" width="25%">
+      <img width="100%" src="./images/로봇전면부.png" alt="로봇 전면부" />
+    </td>
+    <td align="center">
+      <img width="100%" src="./images/로봇후면부.png" alt="로봇 후면부" />
+    </td>
+    <td align="center">
+      <img width="100%" src="./images/로봇내부.png" alt="로봇 내부" />
+    </td>
+    <td align="center">
+      <img width="100%" src="./images/로봇상부.png" alt="로봇 상부" />
+    </td>
   </tr>
 </table>
 
@@ -17,8 +25,12 @@ SLAM 및 CAN 네트워크 기반 산업용 순찰 로봇
 ### 🛠 개발 배경
 <table>
   <tr>
-    <td><img width="100%" src="https://github.com/user-attachments/assets/0f750556-5562-4eaf-bd01-d30efd3d3e59" /></td>
-    <td><img width="100%" src="https://github.com/user-attachments/assets/f6424887-e6b1-44cc-ac80-2b343a6696f2" /></td>
+    <td>
+      <img width="100%" src="./images/연도별%20산업재해자%20그래프.png" alt="연도별 산업재해자 그래프" />
+    </td>
+    <td>
+      <img width="100%" src="./images/산업재해%20업종별%20비율%20그래프.png" alt="산업재해 업종별 비율 그래프" />
+    </td>
   </tr>
 </table>
 
@@ -59,7 +71,9 @@ SLAM 및 CAN 네트워크 기반 산업용 순찰 로봇
 ---
 
 ## 🧩 시스템 구성도
-<img width="1120" height="859" alt="스크린샷 2026-03-10 101036" src="https://github.com/user-attachments/assets/07cd6d3f-be38-4ac4-994d-08cbed580008" />
+<p align="center">
+  <img width="100%" alt="시스템 구성도" src="./images/시스템%20구성도.png" />
+</p>
 
 ## 🔍 상세 기능 설명
 
@@ -98,21 +112,21 @@ Raspberry Pi 5에서 카메라 영상을 처리하고, YOLOv5nu 모델을 이용
   <table border="0">
     <tr>
       <td align="center" style="border: none;">
-        <img src="https://github.com/user-attachments/assets/ccc83bac-695a-45b2-8593-72d67ca5818b" width="380"><br>
+        <img src="./images/%5BDANGER%5D%20모두%20미착용.png" width="380" alt="[DANGER] 모두 미착용"><br>
         <b>[DANGER] 모두 미착용</b>
       </td>
       <td align="center" style="border: none;">
-        <img src="https://github.com/user-attachments/assets/8a43ea39-e98f-4433-8cd4-0536a7763c00" width="380"><br>
+        <img src="./images/%5BDANGER%5D%20안전모만%20착용.png" width="380" alt="[DANGER] 안전모만 착용"><br>
         <b>[DANGER] 안전모만 착용</b>
       </td>
     </tr>
     <tr>
       <td align="center" style="border: none;">
-        <img src="https://github.com/user-attachments/assets/aebacec1-522b-4d51-a234-be4f3aa415c1" width="380"><br>
+        <img src="./images/%5BDANGER%5D%20안전조끼만%20착용.png" width="380" alt="[DANGER] 안전조끼만 착용"><br>
         <b>[DANGER] 안전조끼만 착용</b>
       </td>
       <td align="center" style="border: none;">
-        <img src="https://github.com/user-attachments/assets/7053b866-030a-44d3-aac7-0098df0c8ae9" width="380"><br>
+        <img src="./images/%5BSAFE%5D%20모든%20장비%20착용.png" width="380" alt="[SAFE] 모든 장비 착용"><br>
         <b>[SAFE] 모든 장비 착용</b>
       </td>
     </tr>
