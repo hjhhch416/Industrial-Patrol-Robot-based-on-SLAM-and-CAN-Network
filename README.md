@@ -194,9 +194,9 @@ STM32 제어 노드
 ## 🎬 시연 영상
 <table align="center">
   <tr>
-    <td align="center"><b>1. SLAM 자율주행 시연</b></td>
-    <td align="center"><b>2. 센서 동작 테스트</b></td>
-    <td align="center"><b>3. 실시간 수동 원격 제어 및 모니터링</b></td>
+    <td align="center"><b>SLAM 자율주행 시연</b></td>
+    <td align="center"><b>센서 동작 테스트</b></td>
+    <td align="center"><b>실시간 수동 원격 제어 및 모니터링</b></td>
   </tr>
   <tr>
     <td>
