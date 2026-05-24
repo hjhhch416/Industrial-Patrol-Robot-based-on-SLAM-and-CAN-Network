@@ -66,7 +66,22 @@ SLAM 및 CAN 네트워크 기반 산업용 순찰 로봇
 ---
 
 ## 📂 디렉토리 구조
-
+. <br>
+├── 📂 **[ai_vision/](./ai_vision)** <br>
+│&nbsp;&nbsp;&nbsp;└── AI 비전 기반 객체 인식 및 안전장비 착용 판별 코드 <br>
+├── 📂 **[images/](./images)** <br>
+│&nbsp;&nbsp;&nbsp;└── 🖼 <br>
+├── 📂 **[main/](./main)** <br>
+│&nbsp;&nbsp;&nbsp;└── 전체 시스템 실행 및 통합 제어 코드 <br>
+├── 📂 **[slam/](./slam)** <br>
+│&nbsp;&nbsp;&nbsp;└── SLAM 기반 지도 생성 및 위치 인식 관련 코드 <br>
+├── 📂 **[stm32f429zi/](./stm32f429zi)** <br>
+│&nbsp;&nbsp;&nbsp;└── STM32F429ZI 기반 펌웨어 프로젝트 <br>
+├── 📂 **[stm32f446/](./stm32f446)** <br>
+│&nbsp;&nbsp;&nbsp;└── STM32F446 기반 펌웨어 프로젝트 <br>
+├── 📂 **[webDashBoard + sever/](./webDashBoard%20%2B%20sever)** <br>
+│&nbsp;&nbsp;&nbsp;└── 웹 대시보드 및 서버 연동 코드 <br>
+└── 📄 **[README.md](./README.md)** <br>
 
 ---
 
