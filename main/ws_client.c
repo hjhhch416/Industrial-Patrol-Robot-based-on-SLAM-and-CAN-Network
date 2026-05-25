@@ -1,9 +1,5 @@
 /*
  * ws_client.c
- * 원래 위치: 통합Main.c
- *   - send_robot_data()  (304~411줄)
- *   - callback_robot()   (414~574줄)
- *   - socket_init()      (580~596줄)
  */
 #include "ws_client.h"
 #include "nav2_bridge.h"
