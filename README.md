@@ -191,6 +191,20 @@ STM32F446RE는 좌/우 DC 모터와 카메라 서보를 제어합니다.
 ### 6. 웹 대시보드
 
 웹 대시보드는 로봇의 상태를 실시간으로 확인하고 원격 제어하기 위한 화면입니다.
+<table border="0">
+  <tr>
+    <td align="center">
+      <a href="images/대시보드(맵).png">
+        <img src="images/대시보드(맵).png" width="100%">
+      </a>
+    </td>
+    <td align="center">
+      <a href="images/대시보드(수동조작).png">
+        <img src="images/대시보드(수동조작).png" width="100%">
+      </a>
+    </td>
+  </tr>
+</table>
 
 - 실시간 카메라 영상 표시
 - SLAM 맵 화면 표시
