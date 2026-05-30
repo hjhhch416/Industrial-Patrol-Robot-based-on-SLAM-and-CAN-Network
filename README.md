@@ -88,7 +88,9 @@ SLAM 및 CAN 네트워크 기반 산업용 순찰 로봇
 ## 🧩 시스템 구성도 및 동작 흐름
 - 시스템 구성도
 <p align="center">
-  <img width="100%" alt="시스템 구성도" src="./images/시스템%20구성도.png" />
+  <a href="./images/전체시스템구성도.png">
+    <img width="80%" alt="시스템 구성도" src="./images/전체시스템구성도.png" />
+  </a>
 </p>
 
 - 전체 동작 흐름
