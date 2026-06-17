@@ -1,6 +1,6 @@
 # 🚀 ROS 2 Cartographer SLAM & Nav2 Project for RPi 5
 
-![자율주행 테스트 및 맵 매칭](../images/자율주행_로봇+지도.jpg)
+![자율주행 테스트 및 맵 매칭](../images/자율주행_로봇+지도.png)
 *▲ 실제 구동 중인 자율주행 로봇(우측 상단)과 생성된 지도 위에서 로봇의 위치 및 레이저 스캔을 시각화한 모습(좌측 하단)*
 
 이 프로젝트는 Raspberry Pi 5 환경에서 ROS 2 (Jazzy)를 기반으로 LD08 라이다와 MPU6050 IMU 센서를 융합하여 2D Cartographer SLAM을 수행하고, 생성된 지도를 바탕으로 Navigation2(Nav2) 자율주행을 구현한 종합 패키지입니다.
