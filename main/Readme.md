@@ -344,4 +344,4 @@ make clean
 
 WebSocket으로 Node.js 서버의 명령을 수신해 CAN 버스를 통해 STM32F446(모터·서보)과 STM32F429(부저·LED)로 명령을 송신합니다. STM32로부터 수신한 센서 상태는 WebSocket으로 다시 서버에 송신해 웹 대시보드에 표시합니다.
 
-자율주행 모드에서는 Nav2(ROS2)의 cmd_vel 명령을 UDP로 수신해 CAN 모터 명령으로 변환하여 STM32F446에 송신합니다. YOLO 위험 감지 신호를 UDP로 수신한 경우 모드에 따라 경보 또는 긴급 정지 명령을 STM32에 송신합니다.<img width="1886" height="1163" alt="CAN 구조도" src="https://github.com/user-attachments/assets/b948f413-253b-46c5-8d73-5474252f557c" />
+자율주행 모드에서는 Nav2(ROS2)의 cmd_vel 명령을 UDP로 수신해 CAN 모터 명령으로 변환하여 STM32F446에 송신합니다. YOLO 위험 감지 신호를 UDP로 수신한 경우 모드에 따라 경보 또는 긴급 정지 명령을 STM32에 송신합니다.
