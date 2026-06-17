@@ -1,6 +1,6 @@
 # 🚀 ROS 2 Cartographer SLAM & Nav2 Project for RPi 5
 
-![자율주행 테스트 및 맵 매칭](../images/자율주행(로봇+지도).jpg)
+![자율주행 테스트 및 맵 매칭](../images/자율주행_로봇+지도.jpg)
 *▲ 실제 구동 중인 자율주행 로봇(우측 상단)과 생성된 지도 위에서 로봇의 위치 및 레이저 스캔을 시각화한 모습(좌측 하단)*
 
 이 프로젝트는 Raspberry Pi 5 환경에서 ROS 2 (Jazzy)를 기반으로 LD08 라이다와 MPU6050 IMU 센서를 융합하여 2D Cartographer SLAM을 수행하고, 생성된 지도를 바탕으로 Navigation2(Nav2) 자율주행을 구현한 종합 패키지입니다.
@@ -11,9 +11,11 @@
 * **Sensors**: 
     * **LiDAR**: LD08 (`ld08_driver` 패키지 사용)
         <br>![LD08 라이다](../images/lds_ld08.png)
+
         *LD08 라이다는 2D 평면 스캔을 담당하며 Cartographer 맵 생성과 장애물 회피의 핵심 입력 데이터로 사용됩니다.*
     * **IMU**: MPU6050 (I2C 통신, `ros2_mpu6050` 노드 사용)
         <br>![MPU6050 IMU](../images/IMU.jpg)
+
         *MPU6050은 로봇의 회전 및 가속도 정보를 제공하여 주행 중 발생하는 오도메트리 오차를 보정합니다.*
 * **Key Algorithms**: Cartographer (2D SLAM), RF2O Laser Odometry, Robot Localization (EKF), Navigation2
 
@@ -41,6 +43,7 @@ Raspberry Pi 5의 하드웨어 리소스 한계를 고려하여 최적화된 파
     * **성능 검증**: 아래 평가지표와 성능 자료에서 볼 수 있듯, RF2O는 다른 알고리즘(PSM, PL-ICP) 대비 연산 속도(Runtime)가 매우 빠르고 RMSE 오차율이 낮아 라즈베리파이처럼 리소스가 제한된 환경에 최적화되어 있습니다.
     <br>![RF2O 평가지표](../images/rf2o%20평가지표.png)
     <br>![RF2O 성능 비교 궤적](../images/rf2o성능자료.png)
+
     *▲ Ground Truth(GT) 대비 각 오도메트리 알고리즘의 궤적 비교. RF2O(초록색)가 GT와 가장 근접하게 주행함을 알 수 있습니다.*
 
 * **EKF Filter (`robot_localization`)**: `two_d_mode: true` 및 `publish_tf: true` 로 설정되어 2D 평면 상의 최종 `odom` 좌표계를 시스템에 발행합니다.
@@ -74,3 +77,8 @@ Raspberry Pi 5의 하드웨어 리소스 한계를 고려하여 최적화된 파
 ```bash
 # carto_slam.launch.py를 실행하여 맵 생성
 ./run_slam.sh
+
+**2. Nav (자율 주행) 모드 실행**
+```bash
+# carto_slam.launch.py를 실행하여 맵 생성
+./run_nav.sh
