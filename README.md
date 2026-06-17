@@ -140,8 +140,13 @@ STM32 제어 노드
       </a>
     </td>
     <td align="center">
-      <a href="images/자율주행(로봇+지도).png">
-        <img src="images/자율주행(로봇+지도).png" width="100%">
+      <a href="images/자율주행_로봇+지도.png">
+        <img src="images/자율주행_로봇+지도.png" width="100%">
+      </a>
+    </td>
+    <td align="center">
+      <a href="images/tftree.png">
+        <img src="images/tftree.png" width="100%">
       </a>
     </td>
   </tr>
@@ -149,7 +154,8 @@ STM32 제어 노드
 
 - Cartographer SLAM 기반 지도 생성
 - Nav2 기반 자율 주행
-- LiDAR를 이용한 위치 추정
+- LiDAR기반의 RF2O로 가상 오도메트리 생성
+- IMU센서로 오도메트리를 보정하여 TF tree 구성 
 
 ### 3. Vision AI 안전 감지
 
@@ -234,8 +240,9 @@ STM32F446RE는 좌/우 DC 모터와 카메라 서보를 제어합니다.
 
 ---
 
-### 6. 웹 대시보드
+### 6. 웹 대시보드 및 서버
 
+#### 웹 대시보드
 웹 대시보드는 로봇의 상태를 실시간으로 확인하고 원격 제어하기 위한 화면입니다.
 <table border="0">
   <tr>
@@ -259,6 +266,12 @@ STM32F446RE는 좌/우 DC 모터와 카메라 서보를 제어합니다.
 - 조명 및 경고 장치 제어
 - 모터 속도, 초음파 거리, 조도 값 표시
 - 서버 및 로봇 연결 상태 표시
+
+#### 서버(Node.js)
+- 클라리언트와 로봇의 포트를 분리하여 안정성 확보 및 다중 접속 가능 설계
+- 클라이언트가 접속시 별도에 앱 설치 없이 웹 데시보드 이용가능
+- 맵(rviz2)과 웹캠 화면을 RTSP로 실시간 수신하여 MediaMTX로 JSMpeg로 변환
+- 로봇의 상태정보와 웹 대시보드의 명령을 소켓으로 통신 인프라 구축
 
 ### 핵심 요약
 
@@ -313,8 +326,8 @@ STM32F446RE는 좌/우 DC 모터와 카메라 서보를 제어합니다.
 
 | 이름 | 역할 | 담당 파트 |
 |----------|----------|----------|
-| 이상현 | Project Leader/Backend | SLAM 자율주행 및 서버, (추가) |
-| 김현주 | Project Manager/Firmware | (추가) |
-| 김준기 | Backend | Network(Can), (추가) |
+| 이상현 | Project Leader/Backend | SLAM 자율주행 및 서버 |
+| 김현주 | Project Manager/Firmware | STM32 기능제어 |
+| 김준기 | Backend | Network(Can), Main 프로세스 제작 |
 | 허준형 | Firmware/Frontend | STM32 구동제어, 웹 관제 대시보드 |
 | 정구빈 | Backend/Edge AI | Vision AI 및 영상/데이터 송신 파이프라인 구축 |
