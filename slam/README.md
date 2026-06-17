@@ -33,11 +33,13 @@ Raspberry Pi 5의 하드웨어 리소스 한계를 고려하여 최적화된 파
 * **연산량 최적화**: 라이다 스캔의 최대 거리(`max_range`)를 8.0m로 제한하고, 루프 클로징 최적화 주기(`optimize_every_n_nodes`)를 45로 설정하여 RPi5의 CPU 부하를 대폭 감소시키고 시스템 안정성을 확보했습니다.
 
 ![RViz SLAM 지도 생성](../images/slam기반지도생성.png)
+
 *▲ RViz를 통해 실시간으로 SLAM 기반 지도가 생성되는 모습. 제한된 센서 환경에서도 격자 지도(Grid Map) 위에 로봇의 궤적과 스캔 데이터가 안정적으로 매칭되고 있습니다.*
 
 ### 2. Sensor Fusion & Odometry (`my_ekf.yaml`)
 
 ![TF Tree](../images/tftree.png)
+
 *▲ 현재 시스템의 TF 트리 구조: `map` -> `odom` -> `base_link`를 거쳐 각 하위 센서 링크(`imu_link`, `base_scan`)로 이어지는 안정적인 좌표계 변환 흐름을 보여줍니다.*
 
 * **RF2O Laser Odometry**: 라이다 스캔 데이터를 바탕으로 실시간 2D 오도메트리를 추정합니다.
