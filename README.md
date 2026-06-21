@@ -63,6 +63,8 @@ SLAM 및 CAN 네트워크 기반 산업용 순찰 로봇
 | **Frameworks** | ROS2 (Navi2, Cartographer, rf2o), YOLOv5nu, OpenCV, PyTorch, Node.js, MediaMTX |
 | **Hardware/OS** | Raspberry Pi 5, STM32 (F446RE, F429ZI), USB-CAN 트랜시버(SN65HVD230), LiDAR(lds-02), Webcam, IMU(MPU6050), Ubuntu 24.04, STM32CubeMX |
 
+![C](https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white)![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)![JavaScript](https://img.shields.io/badge/javascript-%23F7DF1E.svg?style=for-the-badge&logo=javascript&logoColor=black)![CAN](https://img.shields.io/badge/CAN--Bus-0052CC?style=for-the-badge&logo=connectivity&logoColor=white)![RTSP](https://img.shields.io/badge/RTSP-FF6600?style=for-the-badge&logo=quicktime&logoColor=white)![UDP](https://img.shields.io/badge/UDP-4A90E2?style=for-the-badge&logo=databricks&logoColor=white)![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socketdotio&logoColor=white)![ROS2](https://img.shields.io/badge/ROS2-22314E?style=for-the-badge&logo=ros&logoColor=white)![YOLOv5](https://img.shields.io/badge/YOLOv5-00FFFF?style=for-the-badge&logo=ultralytics&logoColor=black)![OpenCV](https://img.shields.io/badge/opencv-%23white.svg?style=for-the-badge&logo=opencv&logoColor=white)![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)![Node.js](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.dot-js&logoColor=white)![MediaMTX](https://img.shields.io/badge/MediaMTX-0052CC?style=for-the-badge&logo=go-live&logoColor=white)![Raspberry Pi 5](https://img.shields.io/badge/Raspberry%20Pi%205-A22846?style=for-the-badge&logo=Raspberry%20Pi&logoColor=white)![STM32](https://img.shields.io/badge/STM32-032347?style=for-the-badge&logo=stmicroelectronics&logoColor=white)![Ubuntu 24.04](https://img.shields.io/badge/Ubuntu%2024.04-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
+
 ---
 
 ## 📂 디렉토리 구조
@@ -200,27 +202,40 @@ Raspberry Pi 5에서 카메라 영상을 처리하고, YOLOv5nu 모델을 이용
   </table>
 </div>
 
-### 4. CAN 기반 분산 제어 및 통신 프로토콜
-본 시스템은 **Raspberry Pi 5(메인 제어기)** 와 **2대의 STM32 보드(하위 제어기)** 를 단일 CAN 통신 버스로 연결하여 역할을 완벽히 분리하고 시스템 안정성을 높였습니다. 상위 제어기는 복잡한 연산과 네트워크를 담당하고, 하위 제어기는 실시간 하드웨어 제어를 전담합니다.
+### 4. CAN 기반 분산 제어 및 통신 프로토콜 📡
+
+본 시스템은 **Raspberry Pi 5(메인 제어기)**와 **2대의 STM32 보드(하위 제어기)**를 단일 CAN 통신 버스로 연결하여 역할을 완벽히 분리하고 시스템 안정성을 높였습니다. 상위 제어기는 복잡한 연산과 네트워크를 담당하고, 하위 제어기는 실시간 하드웨어 제어를 전담합니다.
 
 <p align="center">
-  <img src="./images/CAN_구성도.png" width="60%" alt="CAN 상태 패킷 상세 구조">
+  <img src="./images/CAN_구성도.png" width="60%" alt="CAN 네트워크 구성도">
 </p>
 
-#### - 노드별 주요 역할
+#### 🔹 노드별 주요 역할
 | 노드 | 역할 | 상세 기능 |
 |---|---|---|
-| **Raspberry Pi 5** | **상위 통합 제어 및 AI** | - 자율주행 Nav2 제어 명령(`cmd_vel`)을 CAN 명령으로 변환 (`nav2_bridge`)<br>- Vision AI(YOLO) 객체 인식 및 위험 판별<br>- WebSocket 기반 센서 데이터 웹 대시보드 송출 (`ws_client`) |
-| **STM32F446RE** | **주행 및 구동계 제어** | - 좌/우 DC 모터 구동 및 카메라 서보 모터 제어<br>- 초음파 센서 기반 긴급 제동(AEB) 독립 수행 |
-| **STM32F429ZI** | **환경 센싱 및 시각적 알림** | - 조도 센서(Lux)를 통한 주변 밝기 감지<br>- 상황별 RGB LED, 경고용 적색 LED, 부저 알림 제어 |
+| **Raspberry Pi 5** | **상위 통합 제어 및 AI** | - 자율주행 Nav2 제어 명령(`cmd_vel`)을 CAN 명령으로 변환 (`nav2_bridge`) <br>- Vision AI(YOLO) 객체 인식 및 위험 판별 <br>- WebSocket 기반 센서 데이터 웹 대시보드 송출 (`ws_client`) |
+| **STM32F446RE** | **주행 및 구동계 제어** | - 좌/우 DC 모터 구동 및 카메라 서보 모터 제어 <br>- 초음파 센서 기반 긴급 제동(AEB) 독립 수행 |
+| **STM32F429ZI** | **환경 센싱 및 시각적 알림** | - 조도 센서(Lux)를 통한 주변 밝기 감지 <br>- 상황별 RGB LED, 경고용 적색 LED, 부저 알림 제어 |
 
-#### - 주요 통신 설계 특징
-* **통합 수신 로직 처리 (`can_rx_poll`):** 
-  두 대의 STM32가 동시에 데이터를 전송할 때 수신 버퍼 경합으로 인한 데이터 유실을 막기 위해, RPi의 메인 루프에서 최대 256회 버퍼를 일괄 소진합니다. 파싱된 데이터는 ID에 따라 별도의 정적 구조체에 저장되어 안정적으로 상태를 갱신합니다.
-* **실시간 데이터 브릿지:** 
-  UDP로 수신된 자율주행 명령을 실시간으로 CAN 프레임으로 변환하여 모터로 전달하며, 반대로 CAN을 통해 수집된 로버의 하드웨어 상태 데이터는 지연 없이 WebSocket을 통해 원격 서버(대시보드)로 전송됩니다.
 
-### 5. 구동 및 안전 정지
+#### 📊 CAN 통신 메시지 ID 및 프로토콜 명세 (Data Frame)
+
+각 노드 간의 데이터 동기화를 위해 **500kbps 속도의 CAN 분산 통신망**을 구축하였으며, 메시지 충돌을 방지하고 데이터 정밀도를 확보하기 위해 아래와 같이 데이터 ID 및 비트 패킹(Packing) 프로토콜을 독자적으로 설계하여 운영합니다.
+
+<p align="center">
+  <img src="./images/CAN 통신 메시지 ID 명세.jpg" width="100%" alt="CAN 통신 프로토콜 명세">
+</p>
+
+* **모터 속도 명령 (ID: 0x100):** 데이터 왜곡 및 반전을 방지하기 위해 좌/우 속도 데이터를 `int16_t` 타입 2개 구조의 **빅엔디언(Big-Endian)** 방식으로 매핑하여 상위 제어기에서 주행 보드(F446)로 4바이트 전송합니다.
+* **통합 상태 보고 (ID: 0x200 / 0x105):** 하위 보드들의 독립 제어 상태(AEB 진입 유무, 초음파 거리, 현재 주행 속도 등)와 조도/알림 환경 데이터를 각각 8바이트, 5바이트로 패킹(Packing)하여 상위 관제 플랫폼으로 실시간 피드백합니다.
+* **관제 개입 및 제어권 분리 (ID: 0x104):** 원격지 관리자가 긴급 상황이나 점검 시 자율주행 판정을 수동으로 제어할 수 있도록 **AUTO(0) / MANUAL(1)** 모드 전환 인터페이스를 1바이트 구조로 설계하여 시스템 운영의 유연성을 확보했습니다.
+
+
+#### 🔹 주요 통신 설계 특징
+* **통합 수신 로직 처리 (`can_rx_poll`):** 두 대의 STM32가 동시에 데이터를 전송할 때 수신 버퍼 경합으로 인한 데이터 유실을 막기 위해, RPi의 메인 루프에서 최대 256회 버퍼를 일괄 소진합니다. 파싱된 데이터는 ID에 따라 별도의 정적 구조체에 저장되어 안정적으로 상태를 갱신합니다.
+* **실시간 데이터 브릿지:** UDP로 수신된 자율주행 명령을 실시간으로 CAN 프레임으로 변환하여 모터로 전달하며, 반대로 CAN을 통해 수집된 로버의 하드웨어 상태 데이터는 지연 없이 WebSocket을 통해 원격 서버(대시보드)로 전송됩니다.
+
+### 5. 구동 및 안전 정지 (STM32F446RE)
 
 STM32F446RE는 좌/우 DC 모터와 카메라 서보를 제어합니다.  
 또한 초음파 센서를 이용해 후진 중 장애물이 가까워지면 모터 출력을 자동으로 차단합니다.
@@ -245,7 +260,22 @@ STM32F446RE는 좌/우 DC 모터와 카메라 서보를 제어합니다.
 * **정지 해제:** 측정 거리가 **20cm 이상 2회 연속** 잡힐 경우 다시 정상 주행이 가능하도록 복귀됩니다. (센서 타임아웃 200ms 초과 시에도 강제 정지 처리)
   <img width="694" height="194" alt="ultrasonic_logic" src="https://github.com/user-attachments/assets/43046851-b81f-4fc1-adf6-41812cf4f5ac" />
 
-### 6. 웹 대시보드 및 서버
+### 6. 센서 수집 및 시스템 관제 (STM32F429ZI)
+STM32F429ZI 보드는 압도적인 GPIO 개수와 물리적 확장성을 바탕으로 다중 센서를 병렬 관리하는 시스템의 **'센서 허브(Sensor Hub)'** 역할을 수행합니다. 작업장 환경 데이터를 실시간 수집하고, 독립적인 운영 모드(FSM)와 2대 보드 간 CAN 통신망을 총괄 제어합니다.
+
+| 항목 | 하드웨어 설정 값 / 제어 기준 | 비고 |
+| :--- | :---: | :--- |
+| **조도 샘플링 시간** | **56 사이클** 이상 (Continuous Conversion) | 12비트 ADC 최소 충전 시간(9~11시정수) 충족 |
+| **RGB LED 주파수** | **1 kHz** (PSC: 179, ARR: 999) | 사람 눈의 깜빡임 방지, Auto-reload preload 활성화로 Glitch 차단 |
+| **경고 부저 주파수** | **3 ~ 4 kHz** (50% Duty Cycle) | 인간 청각 민감 대역 및 부저 공진 주파수 매칭, 현장 전달력 극대화 |
+| **소모 전류 (F429계통)** | **약 140mA ~ 280mA** 내외 관리 | 피크 800mA인 서보모터를 446으로 분리하여 429 보드 전압 강하 방지 |
+
+#### 💡 운영 모드 (FSM) 및 시스템 연동 로직
+* 자동 모드 (Auto Mode - 기본 설정): 조도 센서를 통해 주변 밝기를 연속 샘플링하여 임계값(dark_th) 이하로 떨어지면 로봇이 스스로 판단하여 RGB LED를 흰색(Full High)으로 점등합니다. 이를 통해 상위 제어기(라즈베리파이 5)의 비전 AI 객체 인식(Helmet, Vest 등 탐지) 프로세스가 저조도 환경에서도 원활하게 시야를 확보하도록 돕습니다.
+* 수동 모드 (Manual Mode): 원격 관제 센터의 관리자가 특정 이미지 캡처나 정밀 점검을 수행할 때, 센서 판단에 의한 강제 소등을 방지하기 위해 조도 센서 값을 무시하고 사용자에게 완전한 제어권을 부여하여 운영의 유연성을 확보합니다.
+* CAN 관제 인터페이스: 500kbps 표준 동기화 속도로 유입되는 긴급 명령에 따라 경고 LED와 부저를 즉각 제어하며(관리자 개입 우선), 수집된 모든 센서 상태 데이터(Raw Data)를 실시간으로 역전송하여 모니터링 대시보드와 동기화합니다.
+
+### 7. 웹 대시보드 및 서버
 
 #### 웹 대시보드
 웹 대시보드는 로봇의 상태를 실시간으로 확인하고 원격 제어하기 위한 화면입니다.
@@ -335,4 +365,4 @@ STM32F446RE는 좌/우 DC 모터와 카메라 서보를 제어합니다.
 | 김현주 | Project Manager/Firmware | STM32 기능제어 |
 | 김준기 | Backend | Network(Can), Main 프로세스 제작 |
 | 허준형 | Firmware/Frontend | STM32 구동제어, 웹 관제 대시보드 |
-| 정구빈 | Backend/Edge AI | Vision AI 및 영상/데이터 송신 파이프라인 구축 |
+| 정구빈 | Backend/Edge AI | Vision AI 및 영상/데이터 송수신 파이프라인 구축 |
