@@ -43,8 +43,8 @@
 - CAN Transceiver
 
 ## 시스템 구조
+<img width="823" height="587" alt="image (2)" src="https://github.com/user-attachments/assets/1e4a15e7-69c7-4938-b885-606c463b96da" />
 
-추후 시스템 구조도를 추가할 예정입니다.
 
 ```text
 Raspberry Pi 5
