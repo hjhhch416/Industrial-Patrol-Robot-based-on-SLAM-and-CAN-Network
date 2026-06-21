@@ -10,7 +10,7 @@
 - Servo Motor PWM 출력 불안정 문제 분석
 - 전원 공급 및 GND 연결 문제 분석을 통한 하드웨어 안정화
 
-## 사용 기술
+## ⚙️ 사용 기술
 
 ### Embedded
 
@@ -42,7 +42,7 @@
 - Ultrasonic Sensor
 - CAN Transceiver
 
-## 시스템 구조
+## 🖥️ 시스템 구조
 <img width="823" height="587" alt="image (2)" src="https://github.com/user-attachments/assets/1e4a15e7-69c7-4938-b885-606c463b96da" />
 
 
