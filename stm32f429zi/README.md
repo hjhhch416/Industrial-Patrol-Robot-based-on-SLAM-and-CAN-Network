@@ -63,7 +63,19 @@ STM32F429ZI
 STM32F446
  └── Motor Control
 ```
+### 🔍 핀맵 (Pin Mapping)
+<img width="1920" height="1080" alt="작업장 순찰 로봇 pptx" src="https://github.com/user-attachments/assets/f1b3982c-c19e-4f1f-9ed7-43f5bfd354db" />
 
+| 분류 | 핀 번호 (Pin) | 기능 (Function) | 연결 대상 (Target) | 비고 (Description) |
+| :---: | :---: | :---: | :---: | :--- |
+| **통신** | PA11 | CAN1_RX | STM32F446 (PA11) | 보드 간 CAN 통신 데이터 수신 |
+| **통신** | PA12 | CAN1_TX | STM32F446 (PA12) | 보드 간 CAN 통신 데이터 송신 |
+| **센서** | PA0 | ADC1_IN0 | 조도 센서 (CDS) | 실시간 주변 밝기 수집 (Auto/Manual 모드) |
+| **출력** | PB0 | GPIO_Output | 경고 부저 (Buzzer) | 3~4kHz 대역 가청 주파수, 50% 듀티비 |
+| **출력** | PB1 | PWM (TIM3_CH4) | RGB LED (Red) | 1kHz 주파수, Glitch 방지(Preload) 적용 |
+| **출력** | PB2 | PWM (TIM3_CH3) | RGB LED (Green) | 1kHz 주파수, Glitch 방지(Preload) 적용 |
+| **출력** | PB3 | PWM (TIM3_CH2) | RGB LED (Blue) | 1kHz 주파수, Glitch 방지(Preload) 적용 |
+| **인터페이스**| - | I2C / SPI / UART | 추가 확장 센서 노드 | 작업장 환경 대응 유연한 인터페이스 확장 |
 
 ### 📌 주요 개발 내용
 
