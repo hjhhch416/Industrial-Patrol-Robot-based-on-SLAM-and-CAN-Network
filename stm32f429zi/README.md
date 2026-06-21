@@ -68,14 +68,15 @@ STM32F446
 
 | 분류 | 핀 번호 (Pin) | 기능 (Function) | 연결 대상 (Target) | 비고 (Description) |
 | :---: | :---: | :---: | :---: | :--- |
-| **통신** | PA11 | CAN1_RX | STM32F446 (PA11) | 보드 간 CAN 통신 데이터 수신 |
-| **통신** | PA12 | CAN1_TX | STM32F446 (PA12) | 보드 간 CAN 통신 데이터 송신 |
-| **센서** | PA0 | ADC1_IN0 | 조도 센서 (CDS) | 실시간 주변 밝기 수집 (Auto/Manual 모드) |
-| **출력** | PB0 | GPIO_Output | 경고 부저 (Buzzer) | 3~4kHz 대역 가청 주파수, 50% 듀티비 |
-| **출력** | PB1 | PWM (TIM3_CH4) | RGB LED (Red) | 1kHz 주파수, Glitch 방지(Preload) 적용 |
-| **출력** | PB2 | PWM (TIM3_CH3) | RGB LED (Green) | 1kHz 주파수, Glitch 방지(Preload) 적용 |
-| **출력** | PB3 | PWM (TIM3_CH2) | RGB LED (Blue) | 1kHz 주파수, Glitch 방지(Preload) 적용 |
-| **인터페이스**| - | I2C / SPI / UART | 추가 확장 센서 노드 | 작업장 환경 대응 유연한 인터페이스 확장 |
+| **통신** | PB8 | CAN1_RX | STM32F446 (PA11) | 보드 간 통신 인터페이스 (Baudrate: 500kbps) |
+| **통신** | PB9 | CAN1_TX | STM32F446 (PA12) | 보드 간 통신 인터페이스 (Baudrate: 500kbps) |
+| **센서** | PA3 | ADC1_IN3 | 포토센서 (CdS) | 연속 샘플링 모드, 데이터 정밀도를 위해 56 사이클 이상의 샘플링 타임 확보 |
+| **출력** | PB4 | TIM3_CH1 (PWM) | 경고 부저 (Buzzer) | PSC: 179, ARR: 999 설정 / 인간 청각 민감 대역 및 공진 주파수(3~4kHz) 제어, 50% 듀티비 |
+| **출력** | PE9 | TIM1_CH1 (PWM) | RGB LED (Red) | PSC: 179, ARR: 999 (1kHz 주파수), 왜곡(Glitch) 방지를 위한 Auto-reload preload 활성화 |
+| **출력** | PE11 | TIM1_CH2 (PWM) | RGB LED (Green) | PSC: 179, ARR: 999 (1kHz 주파수), 왜곡(Glitch) 방지를 위한 Auto-reload preload 활성화 |
+| **출력** | PE13 | TIM1_CH3 (PWM) | RGB LED (Blue) | PSC: 179, ARR: 999 (1kHz 주파수), 왜곡(Glitch) 방지를 위한 Auto-reload preload 활성화 |
+| **출력** | PF15 | GPIO_Output | 단색 LED (단단) | 일반 고휘도 LED 기준 상태 표시용 디지털 출력 (No pull-up/pull-down) |
+| **인터페이스**| - | RMII / USB / UART | 이더넷 및 주변 장치 노드 | LAN8742A-CZ-TR 인터페이스 연동 및 관제 센터향 저지연 인프라 확장성 확보 |
 
 ### 📌 주요 개발 내용
 
