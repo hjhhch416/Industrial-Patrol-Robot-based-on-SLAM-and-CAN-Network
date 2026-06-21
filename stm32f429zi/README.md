@@ -63,7 +63,7 @@ STM32F429ZI
 STM32F446
  └── Motor Control
 ```
-### 🔍 핀맵 (Pin Mapping)
+## 🔍 핀맵 (Pin Mapping)
 <img width="1920" height="1080" alt="작업장 순찰 로봇 pptx" src="https://github.com/user-attachments/assets/f1b3982c-c19e-4f1f-9ed7-43f5bfd354db" />
 
 | 분류 | 핀 번호 (Pin) | 기능 (Function) | 연결 대상 (Target) | 비고 (Description) |
@@ -78,7 +78,7 @@ STM32F446
 | **출력** | PF15 | GPIO_Output | 단색 LED (단단) | 일반 고휘도 LED 기준 상태 표시용 디지털 출력 (No pull-up/pull-down) |
 | **인터페이스**| - | RMII / USB / UART | 이더넷 및 주변 장치 노드 | LAN8742A-CZ-TR 인터페이스 연동 및 관제 센터향 저지연 인프라 확장성 확보 |
 
-### 📌 주요 개발 내용
+## 📌 주요 개발 내용
 
 #### 1. CAN 통신 기반 실시간 분산 제어 네트워크 구현
 * **비동기 인터럽트 기반 명령 수신:** 상위 제어기(Raspberry Pi 5)로부터 하달되는 비동기 제어 명령을 실시간으로 처리하기 위해 `CAN RX FIFO0` 메시지 보류 인터럽트를 활용했습니다.
